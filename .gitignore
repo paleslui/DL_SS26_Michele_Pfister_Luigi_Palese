@@ -1,3 +1,26 @@
-ucec_tpm.csv
-ucec_tpm.txt
-*.csv # optional — blocks future accidents
+# Data files (kept out of repo because of size — see README for download)
+data/ucec_tpm.csv
+data/ucec_tpm.txt
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+.venv/
+venv/
+.env
+
+# Model outputs and caches
+*.pt
+*.pth
+checkpoints/
+data/cache/
+results/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
