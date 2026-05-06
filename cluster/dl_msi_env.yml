@@ -1,0 +1,42 @@
+name: dl_msi
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.11
+
+  # Hyperparameter search
+  - optuna=4.0.*
+  - cmaes
+  - botorch
+  - gpytorch
+
+  # Scientific stack
+  - numpy=1.26.*
+  - pandas=2.2.*
+  - scipy=1.14.*
+  - scikit-learn=1.5.*
+
+  # Plotting + utilities
+  - matplotlib
+  - seaborn
+  - tqdm
+  - pyyaml
+
+  # Notebooks
+  - jupyterlab
+  - ipykernel
+
+  # Database backend for Optuna parallel storage
+  - sqlalchemy
+  - sqlite
+
+  # PyTorch with CUDA 12.1 — installed via pip from PyTorch's own index
+  # (the conda packages are unreliable for picking the GPU variant)
+  - pip
+  - pip:
+      - --index-url https://download.pytorch.org/whl/cu121
+      - torch==2.5.*
+      - torchvision
+      - --index-url https://pypi.org/simple
+      - captum==0.7.*
