@@ -24,3 +24,7 @@ results/
 # IDE
 .vscode/
 .idea/
+
+# Optuna search database — large and machine-specific
+*.db
+results/optuna_studies.db
