@@ -38,6 +38,9 @@ class TrainConfig:
     patience: int = 25            # within-trial early stopping on val AUC plateau
     min_epochs: int = 20          # don't stop earlier than this
 
+    # Optimizer choice
+    optimizer: str = "adam"        # "adam" | "adamw"
+
     # Optional LR scheduler — None / "cosine" / "plateau"
     scheduler_type: Optional[str] = None
     plateau_factor: float = 0.5
@@ -110,11 +113,20 @@ def train_one_fold(
 
     pos_weight = torch.tensor(_class_weight_pos(y_train), device=device)
     criterion = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
-    optimizer = torch.optim.Adam(
-        model.parameters(),
-        lr=config.learning_rate,
-        weight_decay=config.weight_decay,
-    )
+    if config.optimizer == "adam":
+        optimizer = torch.optim.Adam(
+            model.parameters(),
+            lr=config.learning_rate,
+            weight_decay=config.weight_decay,
+        )
+    elif config.optimizer == "adamw":
+        optimizer = torch.optim.AdamW(
+            model.parameters(),
+            lr=config.learning_rate,
+            weight_decay=config.weight_decay,
+        )
+    else:
+        raise ValueError(f"Unknown optimizer: {config.optimizer!r}")
     scheduler = _make_scheduler(optimizer, config)
 
     best_auc = -1.0

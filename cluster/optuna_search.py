@@ -48,6 +48,7 @@ from src.genome_ordering import order_genes_by_genome
 from src.gene_panels import build_panel_sized
 from src.models.cnn1d import CNN1D
 from src.models.gene_transformer import GeneTransformer
+from src.models.lstm_chrom import LSTMChrom
 from src.training import TrainConfig, train_one_fold, best_device
 
 
@@ -119,20 +120,16 @@ def prep_fold_transformer(
 # ---------- model builders --------------------------------------------------
 
 def build_cnn(trial: optuna.Trial, n_genes: int) -> CNN1D:
-    kernel = trial.params["kernel_size"]
-    base = trial.params["base_channels"]
-    pool = trial.params["pool_size"]
-    dropout_conv = trial.params["dropout_conv"]
-    dropout_head = trial.params["dropout_head"]
-    head = trial.params["head_hidden"]
     return CNN1D(
         n_genes=n_genes,
-        channels=(base, base * 2, base * 4),
-        kernel_size=kernel,
-        pool_size=pool,
-        dropout_conv=dropout_conv,
-        dropout_head=dropout_head,
-        dense_dim=head,
+        base_channels=trial.params["base_channels"],
+        n_conv_blocks=trial.params["n_conv_blocks"],
+        kernel_size=trial.params["kernel_size"],
+        pool_size=trial.params["pool_size"],
+        pool_type=trial.params["pool_type"],
+        dropout_conv=trial.params["dropout_conv"],
+        dropout_head=trial.params["dropout_head"],
+        dense_dim=trial.params["head_hidden"],
     )
 
 
@@ -147,25 +144,50 @@ def build_transformer(trial: optuna.Trial, n_genes: int) -> GeneTransformer:
     )
 
 
+def build_lstm(trial: optuna.Trial, n_genes: int) -> LSTMChrom:
+    return LSTMChrom(
+        n_genes=n_genes,
+        chunk_size=trial.params["chunk_size"],
+        chunk_pool=trial.params["chunk_pool"],
+        rnn_type=trial.params["rnn_type"],
+        hidden_size=trial.params["hidden_size"],
+        n_layers=trial.params["rnn_n_layers"],
+        bidirectional=trial.params["bidirectional"],
+        dropout_rnn=trial.params["dropout_rnn"],
+        dropout_head=trial.params["dropout_head"],
+        dense_dim=trial.params["dense_dim"],
+        sequence_pool=trial.params["sequence_pool"],
+    )
+
+
 # ---------- objectives ------------------------------------------------------
 
 def cnn_objective(trial: optuna.Trial, device: torch.device) -> float:
-    # Search space
-    n_top = trial.suggest_categorical("n_top_variable", [None, 15000, 18000, 20000])
-    trial.suggest_categorical("kernel_size", [7, 11, 15, 21, 31])
-    trial.suggest_categorical("base_channels", [16, 32, 64])
+    # Search space (widened — v2)
+    n_top = trial.suggest_categorical(
+        "n_top_variable", [None, 12000, 15000, 18000, 20000, 22000]
+    )
+    trial.suggest_categorical(
+        "kernel_size",
+        [7, 11, 15, 21, 25, 31, 35, 41, 51, 61, 71]
+    )
+    trial.suggest_categorical("base_channels", [8, 16, 32, 64])
+    trial.suggest_int("n_conv_blocks", 2, 4)
     trial.suggest_categorical("pool_size", [2, 4])
+    trial.suggest_categorical("pool_type", ["max", "avg"])
     trial.suggest_float("dropout_conv", 0.0, 0.4)
     trial.suggest_float("dropout_head", 0.2, 0.6)
     trial.suggest_categorical("head_hidden", [64, 128, 256])
-    lr = trial.suggest_float("learning_rate", 1e-4, 5e-3, log=True)
+    lr = trial.suggest_float("learning_rate", 1e-4, 1e-2, log=True)
     wd = trial.suggest_float("weight_decay", 1e-6, 1e-2, log=True)
     bs = trial.suggest_categorical("batch_size", [16, 32, 64])
     sched = trial.suggest_categorical("scheduler_type", ["none", "cosine", "plateau"])
+    opt = trial.suggest_categorical("optimizer", ["adam", "adamw"])
 
     config = TrainConfig(
         epochs=120, batch_size=bs, learning_rate=lr, weight_decay=wd,
-        patience=20, min_epochs=15, scheduler_type=sched,
+        patience=20, min_epochs=15,
+        scheduler_type=sched, optimizer=opt,
     )
 
     fold_aucs = []
@@ -188,27 +210,29 @@ def cnn_objective(trial: optuna.Trial, device: torch.device) -> float:
 
 
 def transformer_objective(trial: optuna.Trial, device: torch.device) -> float:
+    # Search space (v2 — widened)
     panel_size = trial.suggest_categorical("panel", ["small", "medium", "large", "xlarge"])
     panel = build_panel_sized(set(CACHE.tpm.index), size=panel_size)
 
-    d_model = trial.suggest_categorical("d_model", [32, 64, 128])
+    d_model = trial.suggest_categorical("d_model", [32, 64, 128, 192, 256])
     # n_heads must divide d_model — use only valid combos
-    valid_heads = [h for h in (2, 4, 8) if d_model % h == 0]
+    valid_heads = [h for h in (2, 4, 8, 16) if d_model % h == 0]
     n_heads = trial.suggest_categorical("n_heads", valid_heads)
-    trial.suggest_int("n_layers", 1, 3)
-    trial.suggest_categorical("dim_feedforward", [64, 128, 256, 512])
-    trial.suggest_float("dropout", 0.0, 0.5)
-    lr = trial.suggest_float("learning_rate", 1e-5, 1e-3, log=True)
+    trial.suggest_int("n_layers", 1, 4)
+    trial.suggest_categorical("dim_feedforward", [64, 128, 256, 512, 1024])
+    trial.suggest_float("dropout", 0.0, 0.6)
+    lr = trial.suggest_float("learning_rate", 1e-5, 5e-3, log=True)
     wd = trial.suggest_float("weight_decay", 1e-6, 1e-2, log=True)
-    bs = trial.suggest_categorical("batch_size", [16, 32, 64])
+    bs = trial.suggest_categorical("batch_size", [8, 16, 32, 64])
     sched = trial.suggest_categorical("scheduler_type", ["none", "cosine", "plateau"])
+    opt = trial.suggest_categorical("optimizer", ["adam", "adamw"])
 
-    # Avoid the n_heads suggestion warning if n_heads/d_model combos differ across trials
-    _ = n_heads  # used implicitly via trial.params["n_heads"]
+    _ = n_heads  # used via trial.params["n_heads"]
 
     config = TrainConfig(
-        epochs=100, batch_size=bs, learning_rate=lr, weight_decay=wd,
-        patience=20, min_epochs=15, scheduler_type=sched,
+        epochs=120, batch_size=bs, learning_rate=lr, weight_decay=wd,
+        patience=20, min_epochs=15,
+        scheduler_type=sched, optimizer=opt,
     )
 
     fold_aucs = []
@@ -219,6 +243,57 @@ def transformer_objective(trial: optuna.Trial, device: torch.device) -> float:
 
         model = build_transformer(trial, n_genes=len(panel))
         y_prob, _ = train_one_fold(model, X_tr, y_tr, X_va, y_va, config=config, device=device)
+        fold_aucs.append(roc_auc_score(y_va, y_prob))
+
+        running_mean = float(np.mean(fold_aucs))
+        trial.report(running_mean, step=fold_idx)
+        if trial.should_prune():
+            raise optuna.TrialPruned()
+
+    return float(np.mean(fold_aucs))
+
+
+def lstm_objective(trial: optuna.Trial, device: torch.device) -> float:
+    """LSTM/GRU on chromosome-ordered gene expression — same input as CNN."""
+    # Same n_top_variable space as CNN — directly comparable
+    n_top = trial.suggest_categorical(
+        "n_top_variable", [None, 12000, 15000, 18000, 20000, 22000]
+    )
+    trial.suggest_categorical("chunk_size", [25, 50, 100, 150, 200])
+    trial.suggest_categorical("chunk_pool", ["mean", "max"])
+    trial.suggest_categorical("rnn_type", ["lstm", "gru"])
+    trial.suggest_categorical("hidden_size", [32, 64, 128, 256])
+    trial.suggest_int("rnn_n_layers", 1, 3)
+    trial.suggest_categorical("bidirectional", [True, False])
+    trial.suggest_float("dropout_rnn", 0.0, 0.5)
+    trial.suggest_float("dropout_head", 0.2, 0.6)
+    trial.suggest_categorical("dense_dim", [32, 64, 128, 256])
+    trial.suggest_categorical("sequence_pool", ["last", "mean", "max"])
+
+    lr = trial.suggest_float("learning_rate", 1e-4, 1e-2, log=True)
+    wd = trial.suggest_float("weight_decay", 1e-6, 1e-2, log=True)
+    bs = trial.suggest_categorical("batch_size", [16, 32, 64])
+    sched = trial.suggest_categorical("scheduler_type", ["none", "cosine", "plateau"])
+    opt = trial.suggest_categorical("optimizer", ["adam", "adamw"])
+
+    config = TrainConfig(
+        epochs=120, batch_size=bs, learning_rate=lr, weight_decay=wd,
+        patience=20, min_epochs=15,
+        scheduler_type=sched, optimizer=opt,
+    )
+
+    fold_aucs = []
+    for fold_idx, fold in enumerate(CACHE.folds):
+        # Reuse the CNN preprocessor — same pipeline (chr-ordered + variance filter)
+        X_tr, X_va = prep_fold_cnn(fold["train"], fold["val"], n_top)
+        y_tr = (CACHE.labels.loc[fold["train"]] == "MSI-H").astype(int).to_numpy()
+        y_va = (CACHE.labels.loc[fold["val"]] == "MSI-H").astype(int).to_numpy()
+
+        model = build_lstm(trial, n_genes=X_tr.shape[1])
+        y_prob, _ = train_one_fold(
+            model, X_tr, y_tr, X_va, y_va,
+            config=config, device=device,
+        )
         fold_aucs.append(roc_auc_score(y_va, y_prob))
 
         running_mean = float(np.mean(fold_aucs))
@@ -295,7 +370,7 @@ def make_progress_callback(study_name: str, results_dir: Path):
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", choices=["cnn", "transformer"], required=True)
+    parser.add_argument("--model", choices=["cnn", "transformer", "lstm"], required=True)
     parser.add_argument("--sampler", choices=["tpe", "random"], required=True)
     parser.add_argument("--n-trials", type=int, default=200)
     parser.add_argument("--storage", default=None,
@@ -344,7 +419,13 @@ def main() -> None:
 
     # Now install the real sampler
     if args.sampler == "tpe":
-        study.sampler = optuna.samplers.TPESampler(seed=worker_seed, n_startup_trials=15)
+        study.sampler = optuna.samplers.TPESampler(
+            seed=worker_seed,
+            n_startup_trials=50,         # was 15 — more random exploration before exploiting
+            multivariate=True,           # model parameter interactions
+            n_ei_candidates=48,          # more refined acquisition (default 24)
+            consider_endpoints=True,     # include search-space boundaries in candidates
+        )
     elif args.sampler == "random":
         study.sampler = optuna.samplers.RandomSampler(seed=worker_seed)
     else:
@@ -358,8 +439,12 @@ def main() -> None:
     print(f"Device: {device}", flush=True)
     if args.model == "cnn":
         objective = lambda t: cnn_objective(t, device)
-    else:
+    elif args.model == "transformer":
         objective = lambda t: transformer_objective(t, device)
+    elif args.model == "lstm":
+        objective = lambda t: lstm_objective(t, device)
+    else:
+        raise ValueError(args.model)
 
     callback = make_progress_callback(study_name, results_dir)
 
