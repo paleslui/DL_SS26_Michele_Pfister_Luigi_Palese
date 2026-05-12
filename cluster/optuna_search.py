@@ -49,6 +49,7 @@ from src.gene_panels import build_panel_sized
 from src.models.cnn1d import CNN1D
 from src.models.gene_transformer import GeneTransformer
 from src.models.lstm_chrom import LSTMChrom
+from src.models.mlp import MLPClassifier
 from src.training import TrainConfig, train_one_fold, best_device
 
 
@@ -304,6 +305,118 @@ def lstm_objective(trial: optuna.Trial, device: torch.device) -> float:
     return float(np.mean(fold_aucs))
 
 
+def mlp_on_chrord_objective(trial: optuna.Trial, device: torch.device) -> float:
+    """MLP on chr-ordered top-N variable genes (CNN-style input)."""
+    n_top = trial.suggest_categorical(
+        "n_top_variable", [None, 8000, 12000, 15000, 18000, 22000]
+    )
+
+    n_hidden = trial.suggest_int("n_hidden_layers", 1, 3)
+    h1 = trial.suggest_categorical("h1", [64, 128, 256, 512])
+    h2 = trial.suggest_categorical("h2", [32, 64, 128, 256]) if n_hidden >= 2 else None
+    h3 = trial.suggest_categorical("h3", [16, 32, 64, 128]) if n_hidden >= 3 else None
+    hidden = tuple(h for h in (h1, h2, h3) if h is not None)
+    dropout = trial.suggest_float("dropout", 0.1, 0.7)
+
+    lr = trial.suggest_float("learning_rate", 1e-5, 1e-2, log=True)
+    wd = trial.suggest_float("weight_decay", 1e-6, 1e-1, log=True)
+    bs = trial.suggest_categorical("batch_size", [16, 32, 64, 128])
+    sched = trial.suggest_categorical("scheduler_type", ["none", "cosine", "plateau"])
+    opt = trial.suggest_categorical("optimizer", ["adam", "adamw"])
+
+    config = TrainConfig(
+        epochs=200, batch_size=bs, learning_rate=lr, weight_decay=wd,
+        patience=25, min_epochs=20,
+        scheduler_type=sched, optimizer=opt,
+    )
+
+    fold_aucs = []
+    for fold_idx, fold in enumerate(CACHE.folds):
+        X_tr, X_va = prep_fold_cnn(fold["train"], fold["val"], n_top)
+        y_tr = (CACHE.labels.loc[fold["train"]] == "MSI-H").astype(int).to_numpy()
+        y_va = (CACHE.labels.loc[fold["val"]] == "MSI-H").astype(int).to_numpy()
+
+        model = MLPClassifier(
+            input_dim=X_tr.shape[1], hidden_dims=hidden, dropout=dropout,
+        )
+        y_prob, _ = train_one_fold(
+            model, X_tr, y_tr, X_va, y_va,
+            config=config, device=device,
+        )
+        fold_aucs.append(roc_auc_score(y_va, y_prob))
+
+        running_mean = float(np.mean(fold_aucs))
+        trial.report(running_mean, step=fold_idx)
+        if trial.should_prune():
+            raise optuna.TrialPruned()
+
+    return float(np.mean(fold_aucs))
+
+
+def transformer_on_chrord_objective(trial: optuna.Trial, device: torch.device) -> float:
+    """Transformer on chr-ordered top-N variable genes — fits memory.
+
+    Constrained search space because 12k+ tokens × large d_model OOMs.
+    """
+    n_top = trial.suggest_categorical("n_top_variable", [8000, 10000, 12000, 15000])
+
+    d_model = trial.suggest_categorical("d_model", [16, 32, 64, 128])
+    valid_heads = [h for h in (2, 4, 8) if d_model % h == 0]
+    n_heads = trial.suggest_categorical("n_heads", valid_heads)
+    trial.suggest_int("n_layers", 1, 3)
+    trial.suggest_categorical("dim_feedforward", [32, 64, 128, 256])
+    trial.suggest_float("dropout", 0.0, 0.5)
+
+    lr = trial.suggest_float("learning_rate", 1e-5, 1e-3, log=True)
+    wd = trial.suggest_float("weight_decay", 1e-6, 1e-2, log=True)
+    bs = trial.suggest_categorical("batch_size", [2, 4, 8, 16])
+    sched = trial.suggest_categorical("scheduler_type", ["none", "cosine", "plateau"])
+    opt = trial.suggest_categorical("optimizer", ["adam", "adamw"])
+
+    _ = n_heads  # used via trial.params
+
+    config = TrainConfig(
+        epochs=100, batch_size=bs, learning_rate=lr, weight_decay=wd,
+        patience=15, min_epochs=10,
+        scheduler_type=sched, optimizer=opt,
+    )
+
+    fold_aucs = []
+    for fold_idx, fold in enumerate(CACHE.folds):
+        X_tr, X_va = prep_fold_cnn(fold["train"], fold["val"], n_top)
+        y_tr = (CACHE.labels.loc[fold["train"]] == "MSI-H").astype(int).to_numpy()
+        y_va = (CACHE.labels.loc[fold["val"]] == "MSI-H").astype(int).to_numpy()
+
+        model = GeneTransformer(
+            n_genes=X_tr.shape[1],
+            d_model=trial.params["d_model"],
+            n_heads=trial.params["n_heads"],
+            n_layers=trial.params["n_layers"],
+            dim_feedforward=trial.params["dim_feedforward"],
+            dropout=trial.params["dropout"],
+        )
+        try:
+            y_prob, _ = train_one_fold(
+                model, X_tr, y_tr, X_va, y_va,
+                config=config, device=device,
+            )
+        except torch.cuda.OutOfMemoryError:
+            torch.cuda.empty_cache()
+            raise optuna.TrialPruned()
+        fold_aucs.append(roc_auc_score(y_va, y_prob))
+
+        # explicit memory cleanup between folds
+        del model
+        torch.cuda.empty_cache()
+
+        running_mean = float(np.mean(fold_aucs))
+        trial.report(running_mean, step=fold_idx)
+        if trial.should_prune():
+            raise optuna.TrialPruned()
+
+    return float(np.mean(fold_aucs))
+
+
 # ---------- progress callback ----------------------------------------------
 
 def make_progress_callback(study_name: str, results_dir: Path):
@@ -370,7 +483,7 @@ def make_progress_callback(study_name: str, results_dir: Path):
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", choices=["cnn", "transformer", "lstm"], required=True)
+    parser.add_argument("--model", choices=["cnn", "transformer", "lstm", "mlp_chrord", "transformer_chrord"], required=True)
     parser.add_argument("--sampler", choices=["tpe", "random"], required=True)
     parser.add_argument("--n-trials", type=int, default=200)
     parser.add_argument("--storage", default=None,
@@ -443,6 +556,10 @@ def main() -> None:
         objective = lambda t: transformer_objective(t, device)
     elif args.model == "lstm":
         objective = lambda t: lstm_objective(t, device)
+    elif args.model == "mlp_chrord":
+        objective = lambda t: mlp_on_chrord_objective(t, device)
+    elif args.model == "transformer_chrord":
+        objective = lambda t: transformer_on_chrord_objective(t, device)
     else:
         raise ValueError(args.model)
 
