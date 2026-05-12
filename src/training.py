@@ -12,6 +12,7 @@ from typing import Optional
 
 import numpy as np
 import torch
+from scipy.special import expit
 from torch import nn
 from torch.utils.data import DataLoader, TensorDataset
 
@@ -160,7 +161,7 @@ def train_one_fold(
         val_loss = float(np.mean(val_losses))
         val_logits_arr = np.concatenate(val_logits)
         val_targets_arr = np.concatenate(val_targets)
-        val_probs = 1.0 / (1.0 + np.exp(-val_logits_arr))
+        val_probs = expit(val_logits_arr)  # numerically stable sigmoid
         try:
             val_auc = float(roc_auc_score(val_targets_arr, val_probs))
         except ValueError:
@@ -205,7 +206,7 @@ def train_one_fold(
             xb = xb.to(device)
             all_logits.append(model(xb).cpu().numpy())
     final_logits = np.concatenate(all_logits)
-    final_probs = 1.0 / (1.0 + np.exp(-final_logits))
+    final_probs = expit(final_logits)  # numerically stable sigmoid
 
     history["best_epoch"] = best_epoch
     history["best_val_auc"] = best_auc
