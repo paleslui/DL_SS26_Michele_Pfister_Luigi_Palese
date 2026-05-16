@@ -1,0 +1,21 @@
+{
+  "study_name": "transformer_tpe_v2",
+  "best_trial_number": 219,
+  "best_value_auc": 0.9696809116809118,
+  "best_params": {
+    "panel": "small",
+    "d_model": 192,
+    "n_heads": 4,
+    "n_layers": 3,
+    "dim_feedforward": 512,
+    "dropout": 0.04709494316520762,
+    "learning_rate": 0.00033704930635479566,
+    "weight_decay": 0.001618980675412167,
+    "batch_size": 64,
+    "scheduler_type": "plateau",
+    "optimizer": "adamw"
+  },
+  "n_completed": 183,
+  "n_pruned": 117,
+  "saved_at": "2026-05-08 16:47:02"
+}

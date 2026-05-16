@@ -1,0 +1,379 @@
+{
+  "logreg_on_pathways": {
+    "auc": {
+      "point": 0.8832720588235294,
+      "low": 0.8077679875588102,
+      "high": 0.9446235119047618
+    },
+    "f1": {
+      "point": 0.7058823529411765,
+      "low": 0.5757575757575758,
+      "high": 0.8192869840015801
+    },
+    "confusion_matrix": [
+      [
+        56,
+        12
+      ],
+      [
+        8,
+        24
+      ]
+    ],
+    "metrics_at_0.5": {
+      "auc": 0.8832720588235294,
+      "f1": 0.7058823529411765,
+      "precision": 0.6666666666666666,
+      "recall": 0.75,
+      "accuracy": 0.8,
+      "threshold": 0.5
+    },
+    "cell": "logreg_on_pathways",
+    "arch": "logreg",
+    "input": "pathways",
+    "elapsed_seconds": 2.8091351985931396
+  },
+  "logreg_on_panel38": {
+    "auc": {
+      "point": 0.879595588235294,
+      "low": 0.7967359914188273,
+      "high": 0.9492015191422566
+    },
+    "f1": {
+      "point": 0.78125,
+      "low": 0.6521486349848332,
+      "high": 0.8813559322033898
+    },
+    "confusion_matrix": [
+      [
+        61,
+        7
+      ],
+      [
+        7,
+        25
+      ]
+    ],
+    "metrics_at_0.5": {
+      "auc": 0.879595588235294,
+      "f1": 0.78125,
+      "precision": 0.78125,
+      "recall": 0.78125,
+      "accuracy": 0.86,
+      "threshold": 0.5
+    },
+    "cell": "logreg_on_panel38",
+    "arch": "logreg",
+    "input": "panel38",
+    "elapsed_seconds": 2.9135982990264893
+  },
+  "logreg_on_chrord12k": {
+    "auc": {
+      "point": 0.9439338235294117,
+      "low": 0.8882377734877734,
+      "high": 0.9856809895833334
+    },
+    "f1": {
+      "point": 0.8571428571428571,
+      "low": 0.741905615292712,
+      "high": 0.9375
+    },
+    "confusion_matrix": [
+      [
+        64,
+        4
+      ],
+      [
+        5,
+        27
+      ]
+    ],
+    "metrics_at_0.5": {
+      "auc": 0.9439338235294117,
+      "f1": 0.8571428571428571,
+      "precision": 0.8709677419354839,
+      "recall": 0.84375,
+      "accuracy": 0.91,
+      "threshold": 0.5
+    },
+    "cell": "logreg_on_chrord12k",
+    "arch": "logreg",
+    "input": "chrord12k",
+    "elapsed_seconds": 2.9675958156585693
+  },
+  "mlp_on_epic": {
+    "auc": {
+      "point": 0.6622242647058824,
+      "low": 0.5406538865546218,
+      "high": 0.7797351801116184
+    },
+    "f1": {
+      "point": 0.48,
+      "low": 0.3333333333333333,
+      "high": 0.6097899728997288
+    },
+    "confusion_matrix": [
+      [
+        43,
+        25
+      ],
+      [
+        14,
+        18
+      ]
+    ],
+    "metrics_at_0.5": {
+      "auc": 0.6622242647058824,
+      "f1": 0.48,
+      "precision": 0.4186046511627907,
+      "recall": 0.5625,
+      "accuracy": 0.61,
+      "threshold": 0.5
+    },
+    "cell": "mlp_on_epic",
+    "arch": "mlp",
+    "input": "epic",
+    "elapsed_seconds": 6.850888013839722
+  },
+  "mlp_on_panel38": {
+    "auc": {
+      "point": 0.931985294117647,
+      "low": 0.8751497863438162,
+      "high": 0.9765651041666665
+    },
+    "f1": {
+      "point": 0.8253968253968254,
+      "low": 0.7096438172043011,
+      "high": 0.9152542372881356
+    },
+    "confusion_matrix": [
+      [
+        63,
+        5
+      ],
+      [
+        6,
+        26
+      ]
+    ],
+    "metrics_at_0.5": {
+      "auc": 0.931985294117647,
+      "f1": 0.8253968253968254,
+      "precision": 0.8387096774193549,
+      "recall": 0.8125,
+      "accuracy": 0.89,
+      "threshold": 0.5
+    },
+    "cell": "mlp_on_panel38",
+    "arch": "mlp",
+    "input": "panel38",
+    "elapsed_seconds": 4.3877129554748535
+  },
+  "mlp_on_chrord12k": {
+    "auc": {
+      "point": 0.9623161764705883,
+      "low": 0.9243467737587021,
+      "high": 0.9895833333333333
+    },
+    "f1": {
+      "point": 0.8307692307692308,
+      "low": 0.7164179104477612,
+      "high": 0.9166666666666666
+    },
+    "confusion_matrix": [
+      [
+        62,
+        6
+      ],
+      [
+        5,
+        27
+      ]
+    ],
+    "metrics_at_0.5": {
+      "auc": 0.9623161764705883,
+      "f1": 0.8307692307692308,
+      "precision": 0.8181818181818182,
+      "recall": 0.84375,
+      "accuracy": 0.89,
+      "threshold": 0.5
+    },
+    "cell": "mlp_on_chrord12k",
+    "arch": "mlp",
+    "input": "chrord12k",
+    "elapsed_seconds": 4.6688759326934814
+  },
+  "transformer_on_epic": {
+    "auc": {
+      "point": 0.5974264705882353,
+      "low": 0.4776134719710669,
+      "high": 0.7072668351016205
+    },
+    "f1": {
+      "point": 0.49230769230769234,
+      "low": 0.38333333333333336,
+      "high": 0.5899280575539568
+    },
+    "confusion_matrix": [
+      [
+        2,
+        66
+      ],
+      [
+        0,
+        32
+      ]
+    ],
+    "metrics_at_0.5": {
+      "auc": 0.5974264705882353,
+      "f1": 0.49230769230769234,
+      "precision": 0.32653061224489793,
+      "recall": 1.0,
+      "accuracy": 0.34,
+      "threshold": 0.5
+    },
+    "cell": "transformer_on_epic",
+    "arch": "transformer",
+    "input": "epic",
+    "elapsed_seconds": 8.595082998275757
+  },
+  "transformer_on_pathways": {
+    "auc": {
+      "point": 0.8111213235294118,
+      "low": 0.7138156328320802,
+      "high": 0.8945387352384135
+    },
+    "f1": {
+      "point": 0.6197183098591549,
+      "low": 0.4745762711864407,
+      "high": 0.7391453245979749
+    },
+    "confusion_matrix": [
+      [
+        51,
+        17
+      ],
+      [
+        10,
+        22
+      ]
+    ],
+    "metrics_at_0.5": {
+      "auc": 0.8111213235294118,
+      "f1": 0.6197183098591549,
+      "precision": 0.5641025641025641,
+      "recall": 0.6875,
+      "accuracy": 0.73,
+      "threshold": 0.5
+    },
+    "cell": "transformer_on_pathways",
+    "arch": "transformer",
+    "input": "pathways",
+    "elapsed_seconds": 44.882123708724976
+  },
+  "logreg_on_epic": {
+    "cell": "logreg_on_epic",
+    "arch": "logreg",
+    "input": "epic",
+    "auc": {
+      "point": 0.49678308823529416,
+      "low": 0.3718985867074102,
+      "high": 0.6143510698198198
+    },
+    "f1": {
+      "point": 0.4888888888888889,
+      "low": 0.35443037974683544,
+      "high": 0.6078431372549019
+    },
+    "confusion_matrix": [
+      [
+        32,
+        36
+      ],
+      [
+        10,
+        22
+      ]
+    ],
+    "metrics_at_0.5": {
+      "auc": 0.49678308823529416,
+      "f1": 0.4888888888888889,
+      "precision": 0.3793103448275862,
+      "recall": 0.6875,
+      "accuracy": 0.54,
+      "threshold": 0.5
+    },
+    "elapsed_seconds": null,
+    "reused_from": "holdout_logreg_epic.json"
+  },
+  "mlp_on_pathways": {
+    "cell": "mlp_on_pathways",
+    "arch": "mlp",
+    "input": "pathways",
+    "auc": {
+      "point": 0.9002757352941175,
+      "low": 0.8316007413663663,
+      "high": 0.9556177944862154
+    },
+    "f1": {
+      "point": 0.7096774193548387,
+      "low": 0.5666666666666667,
+      "high": 0.8253968253968254
+    },
+    "confusion_matrix": [
+      [
+        60,
+        8
+      ],
+      [
+        10,
+        22
+      ]
+    ],
+    "metrics_at_0.5": {
+      "auc": 0.9002757352941175,
+      "f1": 0.7096774193548387,
+      "precision": 0.7333333333333333,
+      "recall": 0.6875,
+      "accuracy": 0.82,
+      "threshold": 0.5
+    },
+    "elapsed_seconds": null,
+    "reused_from": "holdout_mlp_pathways.json"
+  },
+  "transformer_on_panel38": {
+    "cell": "transformer_on_panel38",
+    "arch": "transformer",
+    "input": "panel38",
+    "auc": {
+      "point": 0.9232536764705882,
+      "low": 0.8513280544909536,
+      "high": 0.9802737946630484
+    },
+    "f1": {
+      "point": 0.7868852459016393,
+      "low": 0.6538265306122449,
+      "high": 0.8861462728551331
+    },
+    "confusion_matrix": [
+      [
+        63,
+        5
+      ],
+      [
+        8,
+        24
+      ]
+    ],
+    "metrics_at_0.5": {
+      "auc": 0.9232536764705882,
+      "f1": 0.7868852459016393,
+      "precision": 0.8275862068965517,
+      "recall": 0.75,
+      "accuracy": 0.87,
+      "threshold": 0.5
+    },
+    "elapsed_seconds": null,
+    "reused_from": "holdout_transformer_panel.json"
+  }
+}

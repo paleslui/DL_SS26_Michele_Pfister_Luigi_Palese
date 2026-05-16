@@ -1,0 +1,26 @@
+{
+  "study_name": "lstm_tpe_v2",
+  "best_trial_number": 173,
+  "best_value_auc": 0.8126286454286454,
+  "best_params": {
+    "n_top_variable": 20000,
+    "chunk_size": 100,
+    "chunk_pool": "mean",
+    "rnn_type": "lstm",
+    "hidden_size": 128,
+    "rnn_n_layers": 1,
+    "bidirectional": true,
+    "dropout_rnn": 0.29729397934764257,
+    "dropout_head": 0.27822067712203835,
+    "dense_dim": 128,
+    "sequence_pool": "max",
+    "learning_rate": 0.007756358598412892,
+    "weight_decay": 0.0003218940612471298,
+    "batch_size": 64,
+    "scheduler_type": "none",
+    "optimizer": "adam"
+  },
+  "n_completed": 221,
+  "n_pruned": 79,
+  "saved_at": "2026-05-08 19:02:57"
+}

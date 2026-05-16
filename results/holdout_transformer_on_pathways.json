@@ -1,0 +1,34 @@
+{
+  "auc": {
+    "point": 0.8111213235294118,
+    "low": 0.7138156328320802,
+    "high": 0.8945387352384135
+  },
+  "f1": {
+    "point": 0.6197183098591549,
+    "low": 0.4745762711864407,
+    "high": 0.7391453245979749
+  },
+  "confusion_matrix": [
+    [
+      51,
+      17
+    ],
+    [
+      10,
+      22
+    ]
+  ],
+  "metrics_at_0.5": {
+    "auc": 0.8111213235294118,
+    "f1": 0.6197183098591549,
+    "precision": 0.5641025641025641,
+    "recall": 0.6875,
+    "accuracy": 0.73,
+    "threshold": 0.5
+  },
+  "cell": "transformer_on_pathways",
+  "arch": "transformer",
+  "input": "pathways",
+  "elapsed_seconds": 44.882123708724976
+}

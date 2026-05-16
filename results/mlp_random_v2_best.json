@@ -1,0 +1,20 @@
+{
+  "study_name": "mlp_random_v2",
+  "best_trial_number": 15,
+  "best_value_auc": 0.8079259259259259,
+  "best_params": {
+    "n_hidden_layers": 3,
+    "h1": 128,
+    "h2": 32,
+    "h3": 32,
+    "dropout": 0.4243810729660639,
+    "learning_rate": 0.0018830411164464734,
+    "weight_decay": 0.0008023527304678847,
+    "batch_size": 16,
+    "scheduler_type": "cosine",
+    "optimizer": "adamw"
+  },
+  "n_completed": 18,
+  "n_pruned": 7,
+  "saved_at": "2026-05-08 14:25:35"
+}

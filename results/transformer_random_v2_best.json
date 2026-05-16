@@ -1,0 +1,21 @@
+{
+  "study_name": "transformer_random_v2",
+  "best_trial_number": 57,
+  "best_value_auc": 0.9711587671587673,
+  "best_params": {
+    "panel": "small",
+    "d_model": 128,
+    "n_heads": 16,
+    "n_layers": 1,
+    "dim_feedforward": 64,
+    "dropout": 0.3820018093003244,
+    "learning_rate": 0.0004539294187909891,
+    "weight_decay": 1.8476008877284162e-06,
+    "batch_size": 32,
+    "scheduler_type": "none",
+    "optimizer": "adam"
+  },
+  "n_completed": 41,
+  "n_pruned": 59,
+  "saved_at": "2026-05-08 18:38:25"
+}

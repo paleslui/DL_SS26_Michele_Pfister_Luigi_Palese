@@ -1,0 +1,24 @@
+{
+  "study_name": "cnn_random_v2",
+  "best_trial_number": 19,
+  "best_value_auc": 0.8168481740481741,
+  "best_params": {
+    "n_top_variable": 12000,
+    "kernel_size": 25,
+    "base_channels": 8,
+    "n_conv_blocks": 4,
+    "pool_size": 4,
+    "pool_type": "max",
+    "dropout_conv": 0.29457769424988917,
+    "dropout_head": 0.5737468059076059,
+    "head_hidden": 64,
+    "learning_rate": 0.009325720560052549,
+    "weight_decay": 0.002267735223551286,
+    "batch_size": 32,
+    "scheduler_type": "cosine",
+    "optimizer": "adamw"
+  },
+  "n_completed": 44,
+  "n_pruned": 156,
+  "saved_at": "2026-05-08 13:23:03"
+}

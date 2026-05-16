@@ -1,0 +1,24 @@
+{
+  "study_name": "cnn_tpe_v2",
+  "best_trial_number": 146,
+  "best_value_auc": 0.8610307174307174,
+  "best_params": {
+    "n_top_variable": 12000,
+    "kernel_size": 71,
+    "base_channels": 16,
+    "n_conv_blocks": 4,
+    "pool_size": 4,
+    "pool_type": "avg",
+    "dropout_conv": 0.19680281243228703,
+    "dropout_head": 0.5622458662668952,
+    "head_hidden": 128,
+    "learning_rate": 0.00011415891559870886,
+    "weight_decay": 0.00029777514060041755,
+    "batch_size": 16,
+    "scheduler_type": "none",
+    "optimizer": "adam"
+  },
+  "n_completed": 297,
+  "n_pruned": 703,
+  "saved_at": "2026-05-08 11:37:50"
+}

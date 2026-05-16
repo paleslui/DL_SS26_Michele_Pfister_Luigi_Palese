@@ -1,0 +1,26 @@
+{
+  "study_name": "lstm_random_v2",
+  "best_trial_number": 21,
+  "best_value_auc": 0.803695622895623,
+  "best_params": {
+    "n_top_variable": 20000,
+    "chunk_size": 100,
+    "chunk_pool": "mean",
+    "rnn_type": "gru",
+    "hidden_size": 32,
+    "rnn_n_layers": 1,
+    "bidirectional": true,
+    "dropout_rnn": 0.05205429099228692,
+    "dropout_head": 0.5199664341492758,
+    "dense_dim": 64,
+    "sequence_pool": "max",
+    "learning_rate": 0.004575512320701719,
+    "weight_decay": 3.8791280730284446e-05,
+    "batch_size": 16,
+    "scheduler_type": "none",
+    "optimizer": "adam"
+  },
+  "n_completed": 68,
+  "n_pruned": 32,
+  "saved_at": "2026-05-08 19:13:25"
+}

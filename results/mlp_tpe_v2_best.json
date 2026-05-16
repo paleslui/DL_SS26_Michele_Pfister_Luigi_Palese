@@ -1,0 +1,19 @@
+{
+  "study_name": "mlp_tpe_v2",
+  "best_trial_number": 29,
+  "best_value_auc": 0.8189396529396529,
+  "best_params": {
+    "n_hidden_layers": 2,
+    "h1": 32,
+    "h2": 64,
+    "dropout": 0.33385829540187306,
+    "learning_rate": 0.007045113454257568,
+    "weight_decay": 1.4486490426204663e-06,
+    "batch_size": 64,
+    "scheduler_type": "none",
+    "optimizer": "adamw"
+  },
+  "n_completed": 46,
+  "n_pruned": 4,
+  "saved_at": "2026-05-08 14:20:44"
+}
