@@ -1,0 +1,19 @@
+{
+  "study_name": "mlp_chrord_tpe_v2",
+  "best_trial_number": 163,
+  "best_value_auc": 0.97391452991453,
+  "best_params": {
+    "n_top_variable": 8000,
+    "n_hidden_layers": 1,
+    "h1": 128,
+    "dropout": 0.38770826272086906,
+    "learning_rate": 0.0037492777759094383,
+    "weight_decay": 0.06584204160933863,
+    "batch_size": 64,
+    "scheduler_type": "none",
+    "optimizer": "adam"
+  },
+  "n_completed": 57,
+  "n_pruned": 143,
+  "saved_at": "2026-05-12 18:11:41"
+}

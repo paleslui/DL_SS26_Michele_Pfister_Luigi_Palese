@@ -16,7 +16,11 @@ venv/
 *.pth
 checkpoints/
 data/cache/
-results/
+
+# Inside results/: keep JSONs and figures, drop big/regenerable stuff
+results/*.npz
+results/optuna_studies.db
+results/transformer_log.txt
 
 # macOS
 .DS_Store
@@ -24,10 +28,6 @@ results/
 # IDE
 .vscode/
 .idea/
-
-# Optuna search database — large and machine-specific
-*.db
-results/optuna_studies.db
 
 # SLURM job-history archives
 cluster/Slurm-*/

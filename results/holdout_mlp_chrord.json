@@ -1,0 +1,48 @@
+{
+  "model_name": "mlp_chrord",
+  "best_params_file": "mlp_chrord_tpe_v2_best.json",
+  "best_params": {
+    "n_top_variable": 8000,
+    "n_hidden_layers": 1,
+    "h1": 128,
+    "dropout": 0.38770826272086906,
+    "learning_rate": 0.0037492777759094383,
+    "weight_decay": 0.06584204160933863,
+    "batch_size": 64,
+    "scheduler_type": "none",
+    "optimizer": "adam"
+  },
+  "cv_auc_at_search": 0.97391452991453,
+  "n_test": 100,
+  "n_pos_test": 32,
+  "auc": {
+    "point": 0.9581801470588235,
+    "low": 0.917247292957184,
+    "high": 0.9883438562408936
+  },
+  "f1": {
+    "point": 0.8387096774193549,
+    "low": 0.7241379310344828,
+    "high": 0.927536231884058
+  },
+  "metrics_at_0.5": {
+    "auc": 0.9581801470588235,
+    "f1": 0.8387096774193549,
+    "precision": 0.8666666666666667,
+    "recall": 0.8125,
+    "accuracy": 0.9,
+    "threshold": 0.5
+  },
+  "confusion_matrix": [
+    [
+      64,
+      4
+    ],
+    [
+      6,
+      26
+    ]
+  ],
+  "elapsed_seconds": 6.9557318687438965,
+  "best_train_epoch": 37
+}

@@ -1,0 +1,21 @@
+{
+  "study_name": "mlp_chrord_random_v2",
+  "best_trial_number": 63,
+  "best_value_auc": 0.9674280238280237,
+  "best_params": {
+    "n_top_variable": 15000,
+    "n_hidden_layers": 3,
+    "h1": 256,
+    "h2": 128,
+    "h3": 128,
+    "dropout": 0.5883821617036112,
+    "learning_rate": 0.00070090363884426,
+    "weight_decay": 3.3983499890855364e-05,
+    "batch_size": 16,
+    "scheduler_type": "none",
+    "optimizer": "adamw"
+  },
+  "n_completed": 23,
+  "n_pruned": 52,
+  "saved_at": "2026-05-12 18:21:23"
+}
