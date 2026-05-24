@@ -7,9 +7,10 @@ The sequence of n_genes tokens passes through a small Transformer encoder.
 A [CLS]-style learned pooling token then feeds the classification head.
 
 This treats genes as an UNORDERED set (no positional encoding) — the model
-learns gene-to-gene relationships via self-attention. Attention weights from
-the [CLS] token are interpretable: which genes did the model attend to when
-making this prediction?
+learns gene-to-gene relationships via self-attention. The ``cls_attention``
+method exposes, per sample, how much the [CLS] token attends to each gene —
+i.e. which genes drove the prediction. This is used by
+scripts/10_transformer_attention.py to produce the interpretability figure.
 """
 from __future__ import annotations
 
@@ -83,3 +84,59 @@ class GeneTransformer(nn.Module):
         out = self.encoder(tokens)
         cls_out = out[:, 0]
         return self.head(cls_out).squeeze(-1)
+
+    @torch.no_grad()
+    def cls_attention(self, x: torch.Tensor, layer: int = -1) -> torch.Tensor:
+        """[CLS]-token attention over genes, for one encoder layer.
+
+        Backs the interpretability claim in the module docstring: for each
+        sample, how much does the classification ([CLS]) token attend to each
+        gene token when forming the representation it classifies from?
+
+        We rebuild the token sequence exactly as in ``forward``, run it through
+        the encoder layers preceding ``layer``, then compute that layer's
+        self-attention explicitly with ``need_weights=True`` (the standard
+        ``nn.TransformerEncoder`` forward path discards attention weights, so we
+        recompute them here using the same trained weights).
+
+        Parameters
+        ----------
+        x : torch.Tensor
+            (batch, n_genes) expression tensor.
+        layer : int
+            Which encoder layer's attention to return (default -1 = last).
+
+        Returns
+        -------
+        torch.Tensor
+            (batch, n_genes) attention weights, averaged over heads, with the
+            [CLS]→[CLS] self-attention removed and the remaining weights
+            renormalised to sum to 1 across genes per sample.
+        """
+        self.eval()
+        batch = x.size(0)
+
+        gene_emb = self.gene_embedding(self.gene_idx).expand(batch, -1, -1)
+        expr_emb = self.expression_proj(x.unsqueeze(-1))
+        tokens = gene_emb + expr_emb
+        cls = self.cls_token.expand(batch, -1, -1)
+        tokens = torch.cat([cls, tokens], dim=1)
+
+        layers = self.encoder.layers
+        idx = layer if layer >= 0 else len(layers) + layer
+
+        # Run the layers preceding the target layer normally
+        for l in layers[:idx]:
+            tokens = l(tokens)
+
+        # Recompute the target layer's self-attention to obtain weights.
+        target = layers[idx]
+        attn_input = target.norm1(tokens) if target.norm_first else tokens
+        _, attn_w = target.self_attn(
+            attn_input, attn_input, attn_input,
+            need_weights=True, average_attn_weights=True,
+        )
+        # attn_w: (batch, seq, seq); [CLS] is index 0
+        cls_to_genes = attn_w[:, 0, 1:]  # drop [CLS]->[CLS]
+        denom = cls_to_genes.sum(dim=1, keepdim=True).clamp_min(1e-12)
+        return cls_to_genes / denom

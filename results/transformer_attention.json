@@ -1,0 +1,276 @@
+{
+  "panel_size": "small",
+  "n_genes": 38,
+  "holdout_auc_this_run": 0.9613970588235294,
+  "uniform_baseline": 0.02631578947368421,
+  "n_test_msih": 32,
+  "n_test_mss": 68,
+  "ranking": [
+    {
+      "gene": "PMS2",
+      "group": "MMR / DNA repair",
+      "attn_msih": 0.1152925044298172,
+      "attn_mss": 0.10976851731538773,
+      "attn_all": 0.1115361899137497
+    },
+    {
+      "gene": "STAT1",
+      "group": "IFN signaling",
+      "attn_msih": 0.06860343366861343,
+      "attn_mss": 0.037412017583847046,
+      "attn_all": 0.047393277287483215
+    },
+    {
+      "gene": "GZMB",
+      "group": "Cytotoxic effector",
+      "attn_msih": 0.06738653779029846,
+      "attn_mss": 0.09649866074323654,
+      "attn_all": 0.08718276023864746
+    },
+    {
+      "gene": "IFNG",
+      "group": "IFN signaling",
+      "attn_msih": 0.06457380950450897,
+      "attn_mss": 0.14568975567817688,
+      "attn_all": 0.11973266303539276
+    },
+    {
+      "gene": "EPCAM",
+      "group": "MMR / DNA repair",
+      "attn_msih": 0.05354280397295952,
+      "attn_mss": 0.002255365950986743,
+      "attn_all": 0.018667349591851234
+    },
+    {
+      "gene": "CD274",
+      "group": "Immune checkpoint",
+      "attn_msih": 0.05178860202431679,
+      "attn_mss": 0.08166664838790894,
+      "attn_all": 0.07210567593574524
+    },
+    {
+      "gene": "CD8A",
+      "group": "T-cell marker",
+      "attn_msih": 0.044281892478466034,
+      "attn_mss": 0.02967400848865509,
+      "attn_all": 0.03434853255748749
+    },
+    {
+      "gene": "GNLY",
+      "group": "Cytotoxic effector",
+      "attn_msih": 0.04412924870848656,
+      "attn_mss": 0.08366483449935913,
+      "attn_all": 0.071013443171978
+    },
+    {
+      "gene": "GZMH",
+      "group": "Cytotoxic effector",
+      "attn_msih": 0.030468180775642395,
+      "attn_mss": 0.057237476110458374,
+      "attn_all": 0.04867129400372505
+    },
+    {
+      "gene": "B2M",
+      "group": "Antigen present.",
+      "attn_msih": 0.02899029478430748,
+      "attn_mss": 0.01656246930360794,
+      "attn_all": 0.02053936943411827
+    },
+    {
+      "gene": "FOXP3",
+      "group": "T-cell marker",
+      "attn_msih": 0.02898564375936985,
+      "attn_mss": 0.05484984442591667,
+      "attn_all": 0.046573299914598465
+    },
+    {
+      "gene": "IRF1",
+      "group": "IFN signaling",
+      "attn_msih": 0.02894078753888607,
+      "attn_mss": 0.019973335787653923,
+      "attn_all": 0.02284291945397854
+    },
+    {
+      "gene": "HLA-A",
+      "group": "Antigen present.",
+      "attn_msih": 0.02601775899529457,
+      "attn_mss": 0.004956865683197975,
+      "attn_all": 0.011696350760757923
+    },
+    {
+      "gene": "PMS1",
+      "group": "MMR / DNA repair",
+      "attn_msih": 0.025488153100013733,
+      "attn_mss": 0.04960784316062927,
+      "attn_all": 0.04188954457640648
+    },
+    {
+      "gene": "HLA-C",
+      "group": "Antigen present.",
+      "attn_msih": 0.024906622245907784,
+      "attn_mss": 0.0059555573388934135,
+      "attn_all": 0.012019896879792213
+    },
+    {
+      "gene": "GZMK",
+      "group": "Cytotoxic effector",
+      "attn_msih": 0.023101629689335823,
+      "attn_mss": 0.024879291653633118,
+      "attn_all": 0.024310432374477386
+    },
+    {
+      "gene": "TAP2",
+      "group": "Antigen present.",
+      "attn_msih": 0.022187337279319763,
+      "attn_mss": 0.005316431168466806,
+      "attn_all": 0.010715119540691376
+    },
+    {
+      "gene": "MSH2",
+      "group": "MMR / DNA repair",
+      "attn_msih": 0.02032032236456871,
+      "attn_mss": 0.003613995620980859,
+      "attn_all": 0.00896002072840929
+    },
+    {
+      "gene": "MLH3",
+      "group": "MMR / DNA repair",
+      "attn_msih": 0.019620275124907494,
+      "attn_mss": 0.011125612072646618,
+      "attn_all": 0.013843906112015247
+    },
+    {
+      "gene": "PDCD1LG2",
+      "group": "Immune checkpoint",
+      "attn_msih": 0.01789017580449581,
+      "attn_mss": 0.03395983204245567,
+      "attn_all": 0.028817543759942055
+    },
+    {
+      "gene": "HLA-B",
+      "group": "Antigen present.",
+      "attn_msih": 0.017462214455008507,
+      "attn_mss": 0.005415152758359909,
+      "attn_all": 0.009270209819078445
+    },
+    {
+      "gene": "GZMA",
+      "group": "Cytotoxic effector",
+      "attn_msih": 0.016154354438185692,
+      "attn_mss": 0.014068683609366417,
+      "attn_all": 0.014736097306013107
+    },
+    {
+      "gene": "MLH1",
+      "group": "MMR / DNA repair",
+      "attn_msih": 0.01549171470105648,
+      "attn_mss": 0.0030053716618567705,
+      "attn_all": 0.007001001387834549
+    },
+    {
+      "gene": "TAP1",
+      "group": "Antigen present.",
+      "attn_msih": 0.013950848020613194,
+      "attn_mss": 0.004601477179676294,
+      "attn_all": 0.0075932759791612625
+    },
+    {
+      "gene": "PRF1",
+      "group": "Cytotoxic effector",
+      "attn_msih": 0.012999218888580799,
+      "attn_mss": 0.008510307408869267,
+      "attn_all": 0.009946760721504688
+    },
+    {
+      "gene": "PDCD1",
+      "group": "Immune checkpoint",
+      "attn_msih": 0.012106366455554962,
+      "attn_mss": 0.02049994096159935,
+      "attn_all": 0.017813993617892265
+    },
+    {
+      "gene": "HAVCR2",
+      "group": "Immune checkpoint",
+      "attn_msih": 0.011263065971434116,
+      "attn_mss": 0.008348525501787663,
+      "attn_all": 0.009281178005039692
+    },
+    {
+      "gene": "CD4",
+      "group": "T-cell marker",
+      "attn_msih": 0.010811129584908485,
+      "attn_mss": 0.0023881751112639904,
+      "attn_all": 0.00508352043107152
+    },
+    {
+      "gene": "CD8B",
+      "group": "T-cell marker",
+      "attn_msih": 0.010384369641542435,
+      "attn_mss": 0.0030400287359952927,
+      "attn_all": 0.005390217527747154
+    },
+    {
+      "gene": "LAG3",
+      "group": "Immune checkpoint",
+      "attn_msih": 0.0100285978987813,
+      "attn_mss": 0.007117734756320715,
+      "attn_all": 0.008049212396144867
+    },
+    {
+      "gene": "NKG7",
+      "group": "Cytotoxic effector",
+      "attn_msih": 0.010014024563133717,
+      "attn_mss": 0.0043199267238378525,
+      "attn_all": 0.006142038851976395
+    },
+    {
+      "gene": "TIGIT",
+      "group": "Immune checkpoint",
+      "attn_msih": 0.009821097366511822,
+      "attn_mss": 0.009117968380451202,
+      "attn_all": 0.009342970326542854
+    },
+    {
+      "gene": "IRF8",
+      "group": "IFN signaling",
+      "attn_msih": 0.00881588738411665,
+      "attn_mss": 0.002797789638862014,
+      "attn_all": 0.004723580088466406
+    },
+    {
+      "gene": "CTLA4",
+      "group": "Immune checkpoint",
+      "attn_msih": 0.007439658977091312,
+      "attn_mss": 0.009157362394034863,
+      "attn_all": 0.008607696741819382
+    },
+    {
+      "gene": "CD3D",
+      "group": "T-cell marker",
+      "attn_msih": 0.0071698399260640144,
+      "attn_mss": 0.007921596057713032,
+      "attn_all": 0.00768103264272213
+    },
+    {
+      "gene": "CD3G",
+      "group": "T-cell marker",
+      "attn_msih": 0.0066681718453764915,
+      "attn_mss": 0.002826937474310398,
+      "attn_all": 0.004056132864207029
+    },
+    {
+      "gene": "MSH6",
+      "group": "MMR / DNA repair",
+      "attn_msih": 0.006660092156380415,
+      "attn_mss": 0.0036208468955010176,
+      "attn_all": 0.004593406338244677
+    },
+    {
+      "gene": "CD3E",
+      "group": "T-cell marker",
+      "attn_msih": 0.006243313662707806,
+      "attn_mss": 0.008573847822844982,
+      "attn_all": 0.007828077301383018
+    }
+  ]
+}
