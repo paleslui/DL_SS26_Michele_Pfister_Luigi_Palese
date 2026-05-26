@@ -316,9 +316,15 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-The TPM expression matrix `data/ucec_tpm.csv` (~145 MB) is not tracked in
-git. It must be present before running any script that touches expression
-data; obtain it from the TCGA-UCEC release used in (Pfister, 2026).
+The TPM expression matrix `data/ucec_tpm.csv` (~145 MB) is not tracked in git
+(too large for GitHub). Download it and place it at `data/ucec_tpm.csv` before
+running any script that touches expression data:
+
+- **Download:** https://drive.google.com/file/d/1lNdT3ozx3aD_QkTAamCTdjixGAgNTAi0/view
+
+All other inputs (clinical labels, EPIC fractions, gene positions, gene sets)
+are already in the repo. See [`data/README.md`](data/README.md) for details on
+each file and data provenance ([`acg-team/shared_files`](https://github.com/acg-team/shared_files)).
 
 ### Run the full local pipeline
 
@@ -406,12 +412,31 @@ Total cluster time: roughly 20-25 GPU-hours wall-clock for all 8 searches.
 
 ---
 
-## Reference
+## References
 
-Pfister, M. (2026). *Comparative immune-cell deconvolution of TCGA-UCEC tumors
-across MSI status using EPIC.* Tracking Module 1, ZHAW Master in Life Sciences.
+- Pfister, M. (2026). *Comparative immune-cell deconvolution of TCGA-UCEC tumors
+  across MSI status using EPIC.* Tracking Module 1, ZHAW Master in Life Sciences.
+  — Source of the 499-sample cohort, MSI labels, and EPIC cell-fraction features
+  (Model 1), and the basis for our hypothesis that signal lives in pathway
+  activation rather than immune-cell abundance.
+- Kondrateva, O. (2025). *UCEC clinical data* [Dataset].
+  https://github.com/acg-team/shared_files
+- *ucec_tpm* (n.d.). [CSV file]. Google Drive. Retrieved 26 May 2026, from
+  https://drive.google.com/file/d/1lNdT3ozx3aD_QkTAamCTdjixGAgNTAi0/view
+- Palese, L. (2026). *DL_SS26_Michele_Pfister_Luigi_Palese* [Code repository].
+  https://github.com/paleslui/DL_SS26_Michele_Pfister_Luigi_Palese
+- Denu, R. (2026). *DNA mismatch repair deficiency* [BioRender template].
+  https://app.biorender.com (used for presentation figures only).
 
-The 499-sample cohort, MSI labels, and EPIC cell-fraction outputs come from
-this study, which we use both as the source of the EPIC features (Model 1) and
-as the basis for our hypothesis that signal lives in activation rather than
-abundance.
+### Methods & tools
+
+- Liberzon, A. et al. (2015). *The Molecular Signatures Database (MSigDB)
+  Hallmark gene set collection.* Cell Systems 1(6), 417–425. — pathway
+  representation (Hallmark v2024.1).
+- Racle, J. et al. (2017). *EPIC: Estimating the proportion of immune and cancer
+  cells from bulk tumor gene expression data.* eLife 6, e26476. — cell-fraction
+  deconvolution.
+- Frankish, A. et al. (2021). *GENCODE reference annotation.* Nucleic Acids
+  Research 49(D1), D916–D923. — gene genomic positions (v45).
+- Akiba, T. et al. (2019). *Optuna: A next-generation hyperparameter
+  optimization framework.* KDD 2019. — hyperparameter search.
