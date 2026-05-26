@@ -1,4 +1,4 @@
-# `data/` — inputs
+# `data/`: inputs
 
 All model inputs. The large expression matrix is **not** in the repo and must be
 downloaded (see below); everything else is small enough to track in git.
@@ -11,7 +11,7 @@ GitHub and is git-ignored. Download it and place it in this folder:
 - **Download:** https://drive.google.com/file/d/1lNdT3ozx3aD_QkTAamCTdjixGAgNTAi0/view
 - **Save as:** `data/ucec_tpm.csv`
 
-Without this file the pipeline cannot run — every representation is built from it.
+Without this file the pipeline cannot run. Every representation is built from it.
 
 ## Files
 
@@ -36,8 +36,8 @@ v2024.1.
 
 ## A note on the "representations"
 
-The four input representations the models use — EPIC fractions, pathway scores,
-the 38-gene panel, and chromosome-ordered genes — are **not stored as files**.
+The four input representations the models use (EPIC fractions, pathway scores,
+the 38-gene panel, and chromosome-ordered genes) are **not stored as files**.
 Only the EPIC fractions are pre-computed (because they come from an external R
 tool). The other three are rebuilt from `ucec_tpm.csv` at runtime, **per
 cross-validation fold**, by the code in [`../src/`](../src):

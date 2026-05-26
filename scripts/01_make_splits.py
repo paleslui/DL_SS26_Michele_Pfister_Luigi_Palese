@@ -1,8 +1,8 @@
 """Generate the holdout split and the 5-fold CV splits.
 
 Run once after data is in place. Produces:
-  data/holdout_split.json — 80/20 train/test split (test never used until final reporting)
-  data/cv_splits.json     — 5-fold CV inside the 80% train portion
+  data/holdout_split.json - 80/20 train/test split (test never used until final reporting)
+  data/cv_splits.json     - 5-fold CV inside the 80% train portion
 
 All training scripts read these files so every model trains on identical splits.
 """

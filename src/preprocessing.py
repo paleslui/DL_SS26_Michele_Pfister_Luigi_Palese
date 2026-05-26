@@ -1,7 +1,7 @@
 """Expression preprocessing: log transform, gene filtering, z-scoring.
 
 All transforms are fit on the *training* portion of a CV fold and then applied
-to the held-out portion — to avoid information leakage that would otherwise
+to the held-out portion - to avoid information leakage that would otherwise
 inflate validation/test metrics.
 """
 from __future__ import annotations

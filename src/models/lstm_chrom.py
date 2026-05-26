@@ -4,7 +4,7 @@ Same input as the CNN (chromosome-ordered expression vector), so the comparison
 is apples-to-apples: convolution vs recurrence on the same biological signal
 (local genomic neighborhoods).
 
-Input shape : (batch, n_genes)              — single channel, treated as sequence
+Input shape : (batch, n_genes)              - single channel, treated as sequence
 Architecture: input projection → optional bidirectional LSTM/GRU → pooling → MLP head
 
 Note on chunking: 27k genes is too long for a vanilla LSTM to process token-by-

@@ -1,4 +1,4 @@
-# `scripts/` — entry-point pipeline
+# `scripts/`: entry-point pipeline
 
 Numbered scripts that run the project end to end. Run them in order from the
 repo root (e.g. `python scripts/01_make_splits.py`). They import the reusable
@@ -20,7 +20,7 @@ logic from [`../src/`](../src) and read/write [`../results/`](../results).
 | `10_transformer_attention.py` | Interpretability: extract the transformer's `[CLS]` attention over the 38 genes → `fig7`. |
 | `make_figures.py` | Regenerate figures 1–6 from saved results. (Figure 7 is made by script 10.) |
 
-## "Initial" vs "final" scripts — important
+## "Initial" vs "final" scripts (important)
 
 Scripts **02–05** train each model with **default, un-tuned** hyperparameters
 and only report cross-validation scores. They are the *first-pass* versions,
@@ -28,12 +28,12 @@ kept to show the modelling progression.
 
 The **authoritative results** come from **07** and **09**, which load the
 Optuna-tuned hyperparameters (from `results/*_v2_best.json`, produced on the
-cluster — see [`../cluster/`](../cluster)) and evaluate once on the untouched
+cluster, see [`../cluster/`](../cluster)) and evaluate once on the untouched
 holdout-test set. When a number in the report and a number from an 02–05 script
 disagree, the 07/09 number is the correct one.
 
 ## Where the tuning happens
 
-These scripts do **not** run the heavy hyperparameter searches — those ran on
+These scripts do **not** run the heavy hyperparameter searches. Those ran on
 the ZHAW SLURM cluster (see [`../cluster/`](../cluster)). The scripts here load
 the resulting best-parameter JSON files and do the final training/evaluation.

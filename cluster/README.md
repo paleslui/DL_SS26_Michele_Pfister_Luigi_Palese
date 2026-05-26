@@ -1,4 +1,4 @@
-# `cluster/` — hyperparameter search on the ZHAW HPC cluster
+# `cluster/`: hyperparameter search on the ZHAW HPC cluster
 
 The heavy Optuna searches (CNN, transformer, LSTM, MLP-chrord) ran on the ZHAW
 **Earth** SLURM cluster on an NVIDIA A100 (40 GB). This folder holds the search
@@ -11,9 +11,9 @@ progress.
 | File | Purpose |
 |---|---|
 | `optuna_search.py` | The search worker. Defines the search space + objective for each model and runs the Optuna study. One generic script, selected via `--model`. |
-| `search_<model>_<sampler>.sh` | SLURM job wrappers — one per (model × sampler). E.g. `search_cnn_tpe.sh` submits a 1000-trial TPE search for the CNN. `_random` variants are the random-search baselines. |
+| `search_<model>_<sampler>.sh` | SLURM job wrappers, one per (model × sampler). E.g. `search_cnn_tpe.sh` submits a 1000-trial TPE search for the CNN. `_random` variants are the random-search baselines. |
 | `final_mlp_chrord_holdout.sh` | SLURM wrapper to run the final MLP-chrord holdout evaluation on the cluster. |
-| `analyze_results.py` | Reads the SQLite DB after searches finish and writes each study's best hyperparameters to `results/<study>_best.json`. No GPU needed — runs on the login node. |
+| `analyze_results.py` | Reads the SQLite DB after searches finish and writes each study's best hyperparameters to `results/<study>_best.json`. No GPU needed; runs on the login node. |
 | `install_dl_msi_env.sh` | One-off environment setup (creates the conda env from `dl_msi_env.yml` via micromamba). |
 | `dl_msi_env.yml` | Conda environment definition for the cluster. |
 

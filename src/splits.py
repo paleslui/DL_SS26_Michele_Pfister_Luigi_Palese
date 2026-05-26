@@ -4,7 +4,7 @@ Strategy
 --------
 We do an honest 80/20 holdout split FIRST, then perform stratified k-fold CV on
 the 80% training portion only. The 20% holdout is never used during model
-development or tuning — only for the final, unbiased report at the end.
+development or tuning - only for the final, unbiased report at the end.
 
 This is the standard "outer holdout, inner CV" pattern. It prevents the very
 common mistake of tuning hyperparameters against the same fold splits used to

@@ -7,7 +7,7 @@ often co-expressed (same chromatin domain, shared regulatory elements, copy-
 number variants affecting blocks). A 1D convolution over this ordered axis
 can pick up such local genomic patterns.
 
-Input shape : (batch, 1, n_genes)        — single channel = expression value
+Input shape : (batch, 1, n_genes)        - single channel = expression value
 Architecture: N conv blocks → adaptive pool → MLP head → 1 logit
 Each conv block : Conv1d → BatchNorm → ReLU → (Max|Avg)Pool → Dropout
 The last block uses AdaptiveAvgPool1d(1) to collapse any remaining length.

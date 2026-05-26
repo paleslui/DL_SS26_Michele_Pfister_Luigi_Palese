@@ -1,6 +1,6 @@
 """Model 2: MLP on MSigDB Hallmark pathway scores.
 
-Each tumor is summarized by 50 numbers — one mean z-scored expression value
+Each tumor is summarized by 50 numbers - one mean z-scored expression value
 per Hallmark pathway. A small MLP then predicts MSI-H vs MSS from these.
 
 Tests Pfister's "activation, not abundance" hypothesis: pathway scores capture

@@ -42,7 +42,7 @@ _PANELS_PATHWAYS: dict[str, tuple[str, ...]] = {
     ),
 }
 
-# Canonical MSI / immune / checkpoint genes — always included
+# Canonical MSI / immune / checkpoint genes - always included
 CANONICAL_GENES: tuple[str, ...] = (
     # Mismatch repair (the core MSI mechanism)
     "MLH1", "MSH2", "MSH6", "PMS2", "PMS1", "MLH3", "EPCAM",

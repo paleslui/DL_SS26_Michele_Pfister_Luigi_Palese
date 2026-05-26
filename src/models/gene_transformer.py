@@ -6,9 +6,9 @@ Each gene becomes a token. The token's representation is the sum of:
 The sequence of n_genes tokens passes through a small Transformer encoder.
 A [CLS]-style learned pooling token then feeds the classification head.
 
-This treats genes as an UNORDERED set (no positional encoding) — the model
+This treats genes as an UNORDERED set (no positional encoding) - the model
 learns gene-to-gene relationships via self-attention. The ``cls_attention``
-method exposes, per sample, how much the [CLS] token attends to each gene —
+method exposes, per sample, how much the [CLS] token attends to each gene -
 i.e. which genes drove the prediction. This is used by
 scripts/10_transformer_attention.py to produce the interpretability figure.
 """

@@ -42,7 +42,7 @@ class TrainConfig:
     # Optimizer choice
     optimizer: str = "adam"        # "adam" | "adamw"
 
-    # Optional LR scheduler — None / "cosine" / "plateau"
+    # Optional LR scheduler - None / "cosine" / "plateau"
     scheduler_type: Optional[str] = None
     plateau_factor: float = 0.5
     plateau_patience: int = 10

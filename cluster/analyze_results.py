@@ -5,7 +5,7 @@ loaded by a final clean training script. Run after the search jobs finish:
 
     python cluster/analyze_results.py
 
-It does not need a GPU — runs fine on the login node or any laptop with the
+It does not need a GPU - runs fine on the login node or any laptop with the
 project repo + SQLite database file.
 """
 from __future__ import annotations
@@ -73,7 +73,7 @@ def main() -> None:
         for t in ranked:
             print(f"    #{t.number:>4d}  AUC={t.value:.4f}")
 
-        # Try parameter importance (TPE only — cheap)
+        # Try parameter importance (TPE only - cheap)
         try:
             importances = optuna.importance.get_param_importances(st)
             print(f"  param importances:")

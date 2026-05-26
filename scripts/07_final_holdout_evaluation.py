@@ -162,7 +162,7 @@ def save_metrics(name: str, results: dict) -> None:
 # -------- per-model training functions -------------------------------------
 
 def run_logreg(epic, labels, train_ids, test_ids):
-    """Model 1: logistic regression on EPIC fractions. No tuning — fixed config."""
+    """Model 1: logistic regression on EPIC fractions. No tuning - fixed config."""
     X_tr, X_te = preprocess_logreg_epic(epic, train_ids, test_ids)
     y_tr = (labels.loc[train_ids] == "MSI-H").astype(int).to_numpy()
     y_te = (labels.loc[test_ids] == "MSI-H").astype(int).to_numpy()

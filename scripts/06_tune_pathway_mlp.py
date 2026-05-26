@@ -200,14 +200,14 @@ def main() -> None:
     print(f"Device: {DEVICE}", flush=True)
     CACHE.load()
 
-    # 1) TPE — 50 trials
+    # 1) TPE - 50 trials
     tpe = optuna.samplers.TPESampler(
         seed=42, n_startup_trials=15, multivariate=True,
         n_ei_candidates=24, consider_endpoints=True,
     )
     run_study("mlp_tpe_v2", tpe, n_trials=50)
 
-    # 2) Random — 25 trials baseline
+    # 2) Random - 25 trials baseline
     rnd = optuna.samplers.RandomSampler(seed=42)
     run_study("mlp_random_v2", rnd, n_trials=25)
 

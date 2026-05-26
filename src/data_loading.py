@@ -7,7 +7,7 @@ Data files expected in ``data/``:
 
 The function ``load_aligned_dataset`` returns three DataFrames whose rows are
 the samples that have BOTH expression data AND a defined MSI status (MSS or
-MSI-H — empty/NA values dropped).
+MSI-H - empty/NA values dropped).
 """
 from __future__ import annotations
 
@@ -31,7 +31,7 @@ def load_tpm() -> pd.DataFrame:
     """Load the TPM matrix. Returns a DataFrame with genes as rows and samples as columns."""
     if not TPM_PATH.exists():
         raise FileNotFoundError(
-            f"{TPM_PATH} not found. The file is gitignored — copy it from your "
+            f"{TPM_PATH} not found. The file is gitignored - copy it from your "
             "local backup or the course Drive."
         )
     df = pd.read_csv(TPM_PATH, index_col=0)

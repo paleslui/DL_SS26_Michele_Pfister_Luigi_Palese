@@ -11,12 +11,12 @@ scripts/10_transformer_attention.py, which needs to retrain the model to
 capture attention weights.
 
 Figures produced:
-    fig1_roc_curves.png            — ROC curves, all 6 models
-    fig2_auc_with_ci.png           — Horizontal bar chart with bootstrap CIs
-    fig3_confusion_matrices.png    — 2x3 panel of confusion matrices
-    fig4_cross_input_grid.png      — Architecture x input heatmap
-    fig5_optuna_progress.png       — TPE vs Random search trajectories
-    fig6_holdout_class_balance.png — Sanity figure: holdout split composition
+    fig1_roc_curves.png            - ROC curves, all 6 models
+    fig2_auc_with_ci.png           - Horizontal bar chart with bootstrap CIs
+    fig3_confusion_matrices.png    - 2x3 panel of confusion matrices
+    fig4_cross_input_grid.png      - Architecture x input heatmap
+    fig5_optuna_progress.png       - TPE vs Random search trajectories
+    fig6_holdout_class_balance.png - Sanity figure: holdout split composition
 """
 from __future__ import annotations
 
@@ -145,7 +145,7 @@ def fig_auc_bar(data: dict, path: Path) -> None:
 
     ax.set_yticks(y_pos)
     ax.set_yticklabels(labels)
-    ax.set_xlabel("AUROC on holdout test (n = 100) — 95% bootstrap CI")
+    ax.set_xlabel("AUROC on holdout test (n = 100) - 95% bootstrap CI")
     ax.set_xlim(0.3, 1.05)
     ax.set_title("Holdout-AUC by model")
     ax.grid(axis="x", alpha=0.3, linestyle=":")
@@ -171,7 +171,7 @@ def fig_confusion(data: dict, path: Path) -> None:
     for ax, (slug, info) in zip(axes, ordered):
         cm = np.array(info["metrics"]["confusion_matrix"])
         im = ax.imshow(cm, cmap="Blues", vmin=0, vmax=cm.max())
-        # Text-color threshold at 60% of max (was 50% — slightly less white text)
+        # Text-color threshold at 60% of max (was 50% - slightly less white text)
         threshold = cm.max() * 0.6
         for i in range(2):
             for j in range(2):
@@ -266,7 +266,7 @@ def fig_optuna(path: Path) -> None:
     storage = f"sqlite:///{RESULTS / 'optuna_studies.db'}"
 
     # (display title, tpe study, random study)
-    # MLP/pathways excluded — its studies live in a separate (local) DB.
+    # MLP/pathways excluded - its studies live in a separate (local) DB.
     studies = [
         ("CNN / chr-ordered",      "cnn_tpe_v2",         "cnn_random_v2"),
         ("Transformer / panel-38", "transformer_tpe_v2", "transformer_random_v2"),

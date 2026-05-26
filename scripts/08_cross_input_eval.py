@@ -11,7 +11,7 @@ Grid:
     Transformer  |  new   |     new      |    ✅    | skipped (memory)
 
 Cells marked ✅ are already in results/holdout_*.json from script 07 and
-are NOT re-run here — we'll merge them into the final table.
+are NOT re-run here - we'll merge them into the final table.
 
 Outputs:
     results/holdout_<arch>_on_<input>.json
@@ -284,7 +284,7 @@ def main():
 
     # ---- summary table ----
     print("\n" + "=" * 88)
-    print(f"{'CROSS-INPUT GRID — holdout AUC (n_test=' + str(len(test_ids)) + ')':^88s}")
+    print(f"{'CROSS-INPUT GRID - holdout AUC (n_test=' + str(len(test_ids)) + ')':^88s}")
     print("=" * 88)
     print(f"  {'Architecture':<13s} | {'EPIC(8)':>17s} | {'Pathways(50)':>17s} | "
           f"{'Panel38':>17s} | {'ChrOrd12k':>17s}")

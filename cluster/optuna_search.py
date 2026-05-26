@@ -7,7 +7,7 @@ Usage (one worker, one study):
     python optuna_search.py --model transformer --sampler random --n-trials 50
 
 All workers writing to the same SQLite database (default
-$REPO/results/optuna_studies.db) coordinate automatically — multiple workers can
+$REPO/results/optuna_studies.db) coordinate automatically - multiple workers can
 run in parallel against the same study and trials are not duplicated.
 
 Robustness:
@@ -164,7 +164,7 @@ def build_lstm(trial: optuna.Trial, n_genes: int) -> LSTMChrom:
 # ---------- objectives ------------------------------------------------------
 
 def cnn_objective(trial: optuna.Trial, device: torch.device) -> float:
-    # Search space (widened — v2)
+    # Search space (widened - v2)
     n_top = trial.suggest_categorical(
         "n_top_variable", [None, 12000, 15000, 18000, 20000, 22000]
     )
@@ -211,12 +211,12 @@ def cnn_objective(trial: optuna.Trial, device: torch.device) -> float:
 
 
 def transformer_objective(trial: optuna.Trial, device: torch.device) -> float:
-    # Search space (v2 — widened)
+    # Search space (v2 - widened)
     panel_size = trial.suggest_categorical("panel", ["small", "medium", "large", "xlarge"])
     panel = build_panel_sized(set(CACHE.tpm.index), size=panel_size)
 
     d_model = trial.suggest_categorical("d_model", [32, 64, 128, 192, 256])
-    # n_heads must divide d_model — use only valid combos
+    # n_heads must divide d_model - use only valid combos
     valid_heads = [h for h in (2, 4, 8, 16) if d_model % h == 0]
     n_heads = trial.suggest_categorical("n_heads", valid_heads)
     trial.suggest_int("n_layers", 1, 4)
@@ -255,8 +255,8 @@ def transformer_objective(trial: optuna.Trial, device: torch.device) -> float:
 
 
 def lstm_objective(trial: optuna.Trial, device: torch.device) -> float:
-    """LSTM/GRU on chromosome-ordered gene expression — same input as CNN."""
-    # Same n_top_variable space as CNN — directly comparable
+    """LSTM/GRU on chromosome-ordered gene expression - same input as CNN."""
+    # Same n_top_variable space as CNN - directly comparable
     n_top = trial.suggest_categorical(
         "n_top_variable", [None, 12000, 15000, 18000, 20000, 22000]
     )
@@ -285,7 +285,7 @@ def lstm_objective(trial: optuna.Trial, device: torch.device) -> float:
 
     fold_aucs = []
     for fold_idx, fold in enumerate(CACHE.folds):
-        # Reuse the CNN preprocessor — same pipeline (chr-ordered + variance filter)
+        # Reuse the CNN preprocessor - same pipeline (chr-ordered + variance filter)
         X_tr, X_va = prep_fold_cnn(fold["train"], fold["val"], n_top)
         y_tr = (CACHE.labels.loc[fold["train"]] == "MSI-H").astype(int).to_numpy()
         y_va = (CACHE.labels.loc[fold["val"]] == "MSI-H").astype(int).to_numpy()
@@ -354,7 +354,7 @@ def mlp_on_chrord_objective(trial: optuna.Trial, device: torch.device) -> float:
 
 
 def transformer_on_chrord_objective(trial: optuna.Trial, device: torch.device) -> float:
-    """Transformer on chr-ordered top-N variable genes — fits memory.
+    """Transformer on chr-ordered top-N variable genes - fits memory.
 
     Constrained search space because 12k+ tokens × large d_model OOMs.
     """
@@ -534,7 +534,7 @@ def main() -> None:
     if args.sampler == "tpe":
         study.sampler = optuna.samplers.TPESampler(
             seed=worker_seed,
-            n_startup_trials=50,         # was 15 — more random exploration before exploiting
+            n_startup_trials=50,         # was 15 - more random exploration before exploiting
             multivariate=True,           # model parameter interactions
             n_ei_candidates=48,          # more refined acquisition (default 24)
             consider_endpoints=True,     # include search-space boundaries in candidates

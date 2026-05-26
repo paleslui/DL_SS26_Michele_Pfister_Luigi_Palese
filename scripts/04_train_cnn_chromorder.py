@@ -3,7 +3,7 @@
 Genes are ordered by (chromosome, start position). The top-N most-variable
 genes (selected on training fold only) are kept, preserving genomic order.
 A 1D convolutional network then looks for local patterns along the genome
-axis — capturing co-expression of nearby genes, copy-number block effects,
+axis - capturing co-expression of nearby genes, copy-number block effects,
 and other spatial genomic structure.
 """
 from __future__ import annotations
