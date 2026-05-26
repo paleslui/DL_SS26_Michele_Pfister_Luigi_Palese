@@ -4,6 +4,9 @@
 classifying microsatellite-instability-high (MSI-H) versus microsatellite-stable (MSS)
 endometrial tumors (TCGA-UCEC) from bulk RNA-seq expression data.
 
+**Research question:** *Which feature representation and model architecture
+perform best at classifying MSI-H vs MSS from bulk RNA-seq?*
+
 **Authors:** Luigi Palese, Michèle Pfister
 **Module:** Deep Learning, ZHAW Master in Life Sciences
 **Submission deadline:** 26.05.2026
@@ -182,6 +185,49 @@ ucec_epic_cellFractions ┘     (340 MSS, 159 MSI-H — Pfister-confirmed counts
 
 The 20% holdout-test set is never seen by any model or hyperparameter search.
 It is only touched by scripts 07 and 09 for the final unbiased evaluation.
+
+---
+
+## Feature representations
+
+Every representation below is derived from the **same** expression matrix
+(`ucec_tpm.csv`); they differ in how much of it the model sees and how it is
+organized. They range from the most compressed and interpretable to the most
+raw and high-dimensional:
+
+| Representation | Size | What it encodes | Why we included it |
+|---|---|---|---|
+| EPIC cell fractions | 8 | Estimated immune/stromal cell proportions | Pfister's prior input — the baseline our hypothesis says should fail. |
+| Hallmark pathway scores | 50 | Mean expression per biological program | Tests the "activation, not abundance" hypothesis at the pathway level. |
+| Curated gene panel | 38 | Hand-picked MSI/immune genes | Tests whether a small, biology-driven feature set is enough. |
+| Chromosome-ordered genes | ~8–22 k | Most-variable genes in genomic order | The raw, minimally-engineered signal; lets CNN/LSTM exploit genomic locality. |
+
+**Why 50 pathways.** The 50 is not a number we chose — it is the *complete*
+MSigDB Hallmark v2024.1 collection (50 curated gene sets covering the major
+biological programs). Each sample is summarized as the mean z-scored expression
+of the genes in each set, giving 50 "how active is this program" features.
+
+**Why 38 genes (and why that exact set).** The panel is built from canonical MSI
+biology (`src/gene_panels.py`): mismatch-repair genes (MLH1, MSH2, MSH6, PMS2,
+PMS1, MLH3, EPCAM), cytotoxic effectors (granzymes, PRF1, GNLY, NKG7), T-cell
+markers, immune checkpoints (PD-1, PD-L1, CTLA4, LAG3, TIGIT), antigen
+presentation (B2M, HLA-A/B/C, TAP1/2), and interferon signalling (IFNG, STAT1,
+IRF1/8) — 38 genes total. The panel *size* was itself a tuned hyperparameter
+(four tiers: `small`/`medium`/`large`/`xlarge`, adding progressively more immune
+Hallmark sets). The focused `small` tier — these 38 canonical genes — won, so
+adding more genes did not help the transformer.
+
+**How the chromosome-ordered subset is selected.** Two steps, both fit on the
+training fold only (no leakage): (1) **variance filter** — keep the top-N
+most-variable genes, where N is a tuned hyperparameter; (2) **genomic ordering** —
+sort those genes by (chromosome, start position) using GENCODE v45, so adjacent
+positions are physical neighbors the CNN/LSTM can exploit. The tuned N differs by
+model: **CNN → 12 000, LSTM → 20 000, winning MLP → 8 000**. Because the variance
+filter is recomputed per fold, the *exact* gene set differs slightly across folds —
+there is no single fixed gene list, by design.
+
+**Which model uses which** is shown in the table below (and compared head-to-head
+in the cross-input experiment further down).
 
 ---
 
