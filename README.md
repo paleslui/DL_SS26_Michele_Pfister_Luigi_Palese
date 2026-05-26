@@ -95,8 +95,8 @@ architecture**.
 │   ├── 07_final_holdout_evaluation.py     final unbiased eval of all 5 tuned models
 │   ├── 08_cross_input_eval.py             the architecture × input grid experiment
 │   ├── 09_final_mlp_chrord_holdout.py     holdout eval for the post-hoc-tuned MLP/chrord
-│   ├── make_figures.py                    regenerate all 6 figures
-│   └── figures.ipynb                      same as above with markdown commentary
+│   ├── 10_transformer_attention.py        extract [CLS] attention → interpretability figure
+│   └── make_figures.py                    regenerate figures 1–6 (fig7 comes from script 10)
 │
 ├── cluster/                             ← scripts to run on the ZHAW Earth-5 SLURM cluster
 │   ├── optuna_search.py                   generic Optuna search worker (CNN/transformer/LSTM/MLP-chrord)
@@ -112,14 +112,13 @@ architecture**.
 │   ├── install_dl_msi_env.sh               one-off env setup on the cluster
 │   └── dl_msi_env.yml                      conda environment definition
 │
-├── notebooks/                           ← EDA scratch space (currently empty)
-│
 └── results/                             ← model outputs (mostly gitignored)
     ├── <model>_tpe_v2_best.json          best hyperparameters per study (tracked)
     ├── <model>_random_v2_best.json       random-search baseline best (tracked)
     ├── holdout_<model>.json              final holdout metrics + CIs (tracked)
     ├── holdout_<model>_predictions.npz   per-sample y_true + y_prob (gitignored)
     ├── cross_input_summary.json          full 3×4 grid output (tracked)
+    ├── transformer_attention.json        per-gene [CLS] attention ranking (tracked)
     ├── optuna_studies.db                 SQLite of every Optuna trial (gitignored, ~10 MB)
     └── figures/                          generated PNGs (tracked)
         ├── fig1_roc_curves.png
@@ -127,7 +126,8 @@ architecture**.
         ├── fig3_confusion_matrices.png
         ├── fig4_cross_input_grid.png
         ├── fig5_optuna_progress.png
-        └── fig6_holdout_class_balance.png
+        ├── fig6_holdout_class_balance.png
+        └── fig7_transformer_attention.png
 ```
 
 ---
@@ -219,6 +219,22 @@ matters far less than the input format.
 because attention's O(n²) memory at our tuned hyperparameters exceeded
 the A100's 40 GB. Adapting the architecture to fit would have changed
 what was being tested.)
+
+### Interpretability: what the transformer attends to
+
+`scripts/10_transformer_attention.py` retrains the transformer with its tuned
+hyperparameters and extracts the [CLS] token's attention over the 38 panel
+genes on the holdout-test set (via `GeneTransformer.cls_attention`). The result
+(`results/figures/fig7_transformer_attention.png`) shows the model concentrates
+attention on the biologically expected genes: the top-attended are **IFNG, PMS2,
+GZMB, CD274, GNLY** — i.e. interferon-γ signalling, a mismatch-repair gene, a
+cytotoxic effector, the PD-L1 checkpoint, and granulysin. Attention on these is
+4–5× the uniform baseline (1/38 = 0.026).
+
+Splitting attention by true class shows the model weights the mismatch-repair
+and antigen-presentation machinery (EPCAM, MSH2, MLH1, HLA-A/B/C, B2M) more
+heavily on MSI-H samples, and cytotoxic effectors more on MSS — evidence the
+model keys on the MSI mechanism itself, not just a generic inflammation signal.
 
 ---
 
@@ -328,7 +344,10 @@ python scripts/08_cross_input_eval.py
 # Final eval for the post-hoc-tuned MLP/chrord
 python scripts/09_final_mlp_chrord_holdout.py
 
-# Regenerate all figures
+# Interpretability: extract the transformer's [CLS] attention over the 38 genes
+python scripts/10_transformer_attention.py
+
+# Regenerate figures 1–6 (fig7 is produced by script 10 above)
 python scripts/make_figures.py
 ```
 
@@ -371,7 +390,8 @@ Total cluster time: roughly 20-25 GPU-hours wall-clock for all 8 searches.
 | `results/holdout_<model>.json` | `scripts/07_final_holdout_evaluation.py` |
 | `results/holdout_mlp_chrord.json` | `scripts/09_final_mlp_chrord_holdout.py` |
 | `results/cross_input_summary.json` | `scripts/08_cross_input_eval.py` |
-| `results/figures/fig*.png` | `scripts/make_figures.py` |
+| `results/transformer_attention.json` + `fig7` | `scripts/10_transformer_attention.py` |
+| `results/figures/fig1`–`fig6` | `scripts/make_figures.py` |
 | `results/optuna_studies.db` | every cluster search writes here |
 
 ---

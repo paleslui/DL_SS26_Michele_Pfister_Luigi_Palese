@@ -6,9 +6,9 @@ Run from repo root:
 Reads from results/, writes to results/figures/. Six PNGs at 200 dpi,
 slide-quality (large fonts, restrained palette, consistent colors per model).
 
-This is the canonical, scripted version of scripts/figures.ipynb. Both
-produce identical output; the notebook adds markdown commentary, the script
-is for "regenerate-and-forget" reproducibility.
+The transformer interpretability figure (fig7) is produced separately by
+scripts/10_transformer_attention.py, which needs to retrain the model to
+capture attention weights.
 
 Figures produced:
     fig1_roc_curves.png            — ROC curves, all 6 models
