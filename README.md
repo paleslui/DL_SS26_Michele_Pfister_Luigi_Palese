@@ -1,6 +1,6 @@
 # Predicting Microsatellite Instability from Bulk RNA-seq
 
-**Deep Learning project (Spring 2026)** — comparing five neural-network architectures for
+**Deep Learning project (Spring 2026)**: comparing five neural-network architectures for
 classifying microsatellite-instability-high (MSI-H) versus microsatellite-stable (MSS)
 endometrial tumors (TCGA-UCEC) from bulk RNA-seq expression data.
 
@@ -39,7 +39,7 @@ found **no significant differences in immune-cell *abundance* between MSI-H and
 MSS tumors**.
 
 Our hypothesis was that the MSI signal lives in pathway-level *activation*
-rather than cell counts — i.e. the same cells do different things in MSI-H
+rather than cell counts, i.e. the same cells do different things in MSI-H
 vs MSS tumors, even if they are present in similar proportions. We test this by
 training non-linear models on increasingly rich representations of the
 expression matrix, from the EPIC fractions Pfister already had (8 features) up
@@ -140,7 +140,7 @@ architecture**.
 ```
 ucec_tpm.csv            ┐
 ucec_clinical.csv       ┤── load_aligned_dataset()  →  499 samples × MSI label
-ucec_epic_cellFractions ┘     (340 MSS, 159 MSI-H — Pfister-confirmed counts)
+ucec_epic_cellFractions ┘     (340 MSS, 159 MSI-H, Pfister-confirmed counts)
 
                                     ↓
 
@@ -197,12 +197,12 @@ raw and high-dimensional:
 
 | Representation | Size | What it encodes | Why we included it |
 |---|---|---|---|
-| EPIC cell fractions | 8 | Estimated immune/stromal cell proportions | Pfister's prior input — the baseline our hypothesis says should fail. |
+| EPIC cell fractions | 8 | Estimated immune/stromal cell proportions | Pfister's prior input, the baseline our hypothesis says should fail. |
 | Hallmark pathway scores | 50 | Mean expression per biological program | Tests the "activation, not abundance" hypothesis at the pathway level. |
 | Curated gene panel | 38 | Hand-picked MSI/immune genes | Tests whether a small, biology-driven feature set is enough. |
 | Chromosome-ordered genes | ~8–22 k | Most-variable genes in genomic order | The raw, minimally-engineered signal; lets CNN/LSTM exploit genomic locality. |
 
-**Why 50 pathways.** The 50 is not a number we chose — it is the *complete*
+**Why 50 pathways.** The 50 is not a number we chose; it is the *complete*
 MSigDB Hallmark v2024.1 collection (50 curated gene sets covering the major
 biological programs). Each sample is summarized as the mean z-scored expression
 of the genes in each set, giving 50 "how active is this program" features.
@@ -212,18 +212,18 @@ biology (`src/gene_panels.py`): mismatch-repair genes (MLH1, MSH2, MSH6, PMS2,
 PMS1, MLH3, EPCAM), cytotoxic effectors (granzymes, PRF1, GNLY, NKG7), T-cell
 markers, immune checkpoints (PD-1, PD-L1, CTLA4, LAG3, TIGIT), antigen
 presentation (B2M, HLA-A/B/C, TAP1/2), and interferon signalling (IFNG, STAT1,
-IRF1/8) — 38 genes total. The panel *size* was itself a tuned hyperparameter
+IRF1/8), 38 genes total. The panel *size* was itself a tuned hyperparameter
 (four tiers: `small`/`medium`/`large`/`xlarge`, adding progressively more immune
-Hallmark sets). The focused `small` tier — these 38 canonical genes — won, so
+Hallmark sets). The focused `small` tier (these 38 canonical genes) won, so
 adding more genes did not help the transformer.
 
 **How the chromosome-ordered subset is selected.** Two steps, both fit on the
-training fold only (no leakage): (1) **variance filter** — keep the top-N
-most-variable genes, where N is a tuned hyperparameter; (2) **genomic ordering** —
+training fold only (no leakage): (1) **variance filter**: keep the top-N
+most-variable genes, where N is a tuned hyperparameter; (2) **genomic ordering**:
 sort those genes by (chromosome, start position) using GENCODE v45, so adjacent
 positions are physical neighbors the CNN/LSTM can exploit. The tuned N differs by
 model: **CNN → 12 000, LSTM → 20 000, winning MLP → 8 000**. Because the variance
-filter is recomputed per fold, the *exact* gene set differs slightly across folds —
+filter is recomputed per fold, the *exact* gene set differs slightly across folds;
 there is no single fixed gene list, by design.
 
 **Which model uses which** is shown in the table below (and compared head-to-head
@@ -261,7 +261,7 @@ increases monotonically as one moves from 8 → 50 → 38 → 12000 input
 features, for *every* architecture tested. The architecture's choice
 matters far less than the input format.
 
-(One cell — transformer on 12 000 chr-ordered genes — was not evaluated
+(One cell, the transformer on 12 000 chr-ordered genes, was not evaluated
 because attention's O(n²) memory at our tuned hyperparameters exceeded
 the A100's 40 GB. Adapting the architecture to fit would have changed
 what was being tested.)
@@ -273,13 +273,13 @@ hyperparameters and extracts the [CLS] token's attention over the 38 panel
 genes on the holdout-test set (via `GeneTransformer.cls_attention`). The result
 (`results/figures/fig7_transformer_attention.png`) shows the model concentrates
 attention on the biologically expected genes: the top-attended are **IFNG, PMS2,
-GZMB, CD274, GNLY** — i.e. interferon-γ signalling, a mismatch-repair gene, a
+GZMB, CD274, GNLY** (i.e. interferon-γ signalling, a mismatch-repair gene, a
 cytotoxic effector, the PD-L1 checkpoint, and granulysin. Attention on these is
 4–5× the uniform baseline (1/38 = 0.026).
 
 Splitting attention by true class shows the model weights the mismatch-repair
 and antigen-presentation machinery (EPCAM, MSH2, MLH1, HLA-A/B/C, B2M) more
-heavily on MSI-H samples, and cytotoxic effectors more on MSS — evidence the
+heavily on MSI-H samples, and cytotoxic effectors more on MSS, evidence the
 model keys on the MSI mechanism itself, not just a generic inflammation signal.
 
 ---
@@ -346,6 +346,92 @@ For each architecture, `scripts/07` (and `scripts/09` for the MLP-chrord) does:
 3. Predict on the 100-sample holdout-test (never previously seen).
 4. Compute AUROC, F1, confusion matrix, and 95% bootstrap CIs (2000 resamples).
 5. Save `holdout_<model>.json` and `holdout_<model>_predictions.npz`.
+
+---
+
+## Discussion: how we interpret the results
+
+The points below are our **interpretation** of the results, not established
+fact. The experiments measure *what* each model scored; the explanations for
+*why* are hypotheses consistent with our data, and other readings are possible.
+
+**The overall pattern we observe.** The models that performed best are the ones
+that make the fewest (or, we would argue, the most appropriate) assumptions
+about *where* the MSI signal sits in the expression data. Ranking the models by
+how strong a structural assumption they impose, the order-blind models (the
+MLPs) and the all-pairs transformer landed at the top, while the models that
+assume *local* or *sequential* genomic structure (CNN, LSTM) landed lower. We
+read this as evidence that the MSI signal is broadly distributed across many
+genes rather than concentrated in local genomic neighbourhoods, but we cannot
+rule out that better tuning would narrow these gaps.
+
+**Why we think the order-blind MLP did best (0.958).** The winning model treats
+the genes as an unordered set and learns weighted combinations across all of
+them at once. Our reading is that this suits a signal that appears to be
+diffuse and additive (spread across many genes on many chromosomes) because
+the MLP can pool evidence from anywhere without a positional prior getting in
+the way. We also note its unusually high weight decay (≈0.066, far above the
+other models); we believe this strong regularization is what let a model with
+8 000 inputs and only ~400 training samples generalize rather than overfit,
+though we did not test that directly.
+
+**Why we suspect the CNN and LSTM underperformed.** Both assume that neighbouring
+positions are related: the CNN through local filters, the LSTM through a
+sequential reading of the gene order. Genes that are MSI-relevant (mismatch
+repair, interferon, cytotoxic markers) appear to be scattered across many
+chromosomes rather than clustered, so we suspect these locality/sequence
+assumptions did not match the data and the models spent capacity looking for
+structure that may not be there. For the LSTM specifically, the chunk-and-pool
+step we used to make the long gene sequence tractable also discards
+gene-level detail, which we think compounded the disadvantage. We are cautious
+here: CNNs and LSTMs are also harder to optimize than MLPs, so part of the gap
+could be optimization difficulty rather than a true mismatch; we cannot fully
+separate the two from this experiment.
+
+**One observation that we think supports the "diffuse signal" reading.** In the
+cross-input experiment, even logistic regression on chromosome-ordered genes
+(0.944) outperformed both the tuned CNN and LSTM on similar input. A model with
+far less machinery doing better is, in our interpretation, more consistent with
+the signal being broadly distributed than with it requiring local feature
+extraction, though again this is an inference, not proof.
+
+**Why we think logistic regression on EPIC failed (0.497).** This model carries
+two handicaps at once: the input is already compressed to 8 cell-fraction
+numbers (consistent with Pfister's finding that abundance alone does not
+separate the classes), and the model itself can only draw a linear boundary.
+Because both limitations apply simultaneously, we cannot attribute the failure
+to either one alone, which is precisely why we treat it only as a baseline.
+
+**What the interpretability analysis suggests.** The transformer's attention
+concentrated on mismatch-repair and interferon-signalling genes (see the
+Interpretability section). We take this as encouraging evidence that the model
+keyed on biologically relevant genes rather than an artefact, but attention
+weights are not a causal explanation, and we present this as suggestive rather
+than conclusive.
+
+## Limitations and future work
+
+- **Single cohort, no external validation.** All results come from one
+  TCGA-UCEC cohort. We do not know how well any model would generalize to data
+  from another source; external validation would be the most important next
+  step.
+- **Small test set, wide intervals.** With 100 holdout samples, the 95% bootstrap
+  CIs are wide and overlap for the stronger models, so we cannot claim a
+  statistically clear ranking among the top performers, only that the
+  transcriptomic models clearly beat the EPIC baseline.
+- **Per-fold gene selection.** The variance filter is recomputed per fold, so
+  there is no single fixed gene list; we did not analyse how stable the selected
+  genes are across folds.
+- **Transformer not tested on the full gene set.** Self-attention's O(n²) memory
+  made the 12 000-gene input infeasible at our tuned configuration, so that one
+  cell of the cross-input grid is missing.
+- **Run-to-run variance.** Training on Apple Silicon (MPS) is not fully
+  deterministic; repeated runs of the same configuration vary by a few
+  thousandths of AUC, which is part of why small differences between models
+  should not be over-interpreted.
+- **Single training run per model.** Our confidence intervals capture test-set
+  sampling uncertainty (via bootstrapping the predictions) but not
+  training-run variability, since we did not retrain each model multiple times.
 
 ---
 
@@ -438,7 +524,7 @@ Total cluster time: roughly 20-25 GPU-hours wall-clock for all 8 searches.
 |---|---|
 | `data/holdout_split.json`, `data/cv_splits.json` | `scripts/01_make_splits.py` |
 | `results/<model>_tpe_v2_best.json` | `cluster/optuna_search.py` (one study per model) |
-| `results/<model>_random_v2_best.json` | same — `--sampler random` |
+| `results/<model>_random_v2_best.json` | same script with `--sampler random` |
 | `results/holdout_<model>.json` | `scripts/07_final_holdout_evaluation.py` |
 | `results/holdout_mlp_chrord.json` | `scripts/09_final_mlp_chrord_holdout.py` |
 | `results/cross_input_summary.json` | `scripts/08_cross_input_eval.py` |
@@ -462,7 +548,7 @@ Total cluster time: roughly 20-25 GPU-hours wall-clock for all 8 searches.
 
 - Pfister, M. (2026). *Comparative immune-cell deconvolution of TCGA-UCEC tumors
   across MSI status using EPIC.* Tracking Module 1, ZHAW Master in Life Sciences.
-  — Source of the 499-sample cohort, MSI labels, and EPIC cell-fraction features
+  Source of the 499-sample cohort, MSI labels, and EPIC cell-fraction features
   (Model 1), and the basis for our hypothesis that signal lives in pathway
   activation rather than immune-cell abundance.
 - Kondrateva, O. (2025). *UCEC clinical data* [Dataset].
@@ -477,12 +563,12 @@ Total cluster time: roughly 20-25 GPU-hours wall-clock for all 8 searches.
 ### Methods & tools
 
 - Liberzon, A. et al. (2015). *The Molecular Signatures Database (MSigDB)
-  Hallmark gene set collection.* Cell Systems 1(6), 417–425. — pathway
+  Hallmark gene set collection.* Cell Systems 1(6), 417–425. Pathway
   representation (Hallmark v2024.1).
 - Racle, J. et al. (2017). *EPIC: Estimating the proportion of immune and cancer
-  cells from bulk tumor gene expression data.* eLife 6, e26476. — cell-fraction
+  cells from bulk tumor gene expression data.* eLife 6, e26476. Cell-fraction
   deconvolution.
 - Frankish, A. et al. (2021). *GENCODE reference annotation.* Nucleic Acids
-  Research 49(D1), D916–D923. — gene genomic positions (v45).
+  Research 49(D1), D916–D923. Gene genomic positions (v45).
 - Akiba, T. et al. (2019). *Optuna: A next-generation hyperparameter
-  optimization framework.* KDD 2019. — hyperparameter search.
+  optimization framework.* KDD 2019. Hyperparameter search.
